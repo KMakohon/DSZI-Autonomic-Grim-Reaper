@@ -8,3 +8,4 @@ PLAYER_SPEED = 0.5
 PLAYER_IMG_R = 'reaperR.png'
 PERSON_IMG = 'person.png'
 PLAYER_IMG_L = 'reaperL.png'
+PLAYER_HIT_RECT = pg.Rect(0, 0, 50, 50)
