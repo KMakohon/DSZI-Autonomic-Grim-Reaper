@@ -1,16 +1,20 @@
-from settings import TILESIZE, PLAYER_SPEED, pg
+from settings import TILESIZE, PLAYER_SPEED, pg, PLAYER_HIT_RECT
+from collisions import *
 
 vec = pg.math.Vector2
 
-class Player(pg.sprite.Sprite):
+
+class Reaper(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites
+        self.groups = game.reaper
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = game.player_img_R
         self.rect = self.image.get_rect()
+        self.hit_rect = PLAYER_HIT_RECT
+        self.hit_rect.center = self.rect.center
         self.pos = vec(x, y) * TILESIZE
-        self.rot = 0
+
 
     def get_keys(self):
         self.vel = vec(0, 0)
@@ -32,14 +36,10 @@ class Player(pg.sprite.Sprite):
         self.get_keys()
         self.rect.center = self.pos
         self.pos += self.vel
-
-
-class Person(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.groups = game.all_sprites
-        pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = game.person_img
         self.rect = self.image.get_rect()
-        self.rect.y = y * TILESIZE
-        self.rect.x = x * TILESIZE
+        self.rect.center = self.pos
+        self.hit_rect.centerx = self.pos.x
+        collide_with_walls(self, self.game.walls, 'x')
+        self.hit_rect.centery = self.pos.y
+        collide_with_walls(self, self.game.walls, 'y')
+        self.rect.center = self.hit_rect.center
