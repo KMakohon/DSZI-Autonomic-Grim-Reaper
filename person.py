@@ -14,15 +14,17 @@ class Person(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y = y * TILESIZE
         self.rect.x = x * TILESIZE
-        if (len(rest) == 5):
+        if (len(rest) == 6):
             self.age = rest[0]
             self.disease = rest[1]
             self.good = rest[2]
             self.lawful = rest[3]
             self.money = rest[4]
+            self.gender = rest[5]
         else:
             self.age = randint(0, 50) + randint(0, 25) + randint(0, 25)
             self.disease = randint(0, 10)
             self.good = randint(0, 100)
             self.lawful = randint(0, 100)
             self.money = floor(normalvariate(1000, 500))
+            self. gender = randint(0, 1)
