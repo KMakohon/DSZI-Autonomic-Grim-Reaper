@@ -28,10 +28,10 @@ class Game:
         self.reaper = pg.sprite.Group()
         self.people = pg.sprite.Group()
         self.walls = pg.sprite.Group()
-        Person(self,2,2)
+        Person(self, 2, 2)
         Person(self, 3, 6)
         Person(self, 10, 8)
-        Person(self, 4,2)
+        Person(self, 4, 2,1,1,1,1,1)
 
         self.agent = Reaper(self, 5, 5)
         self.camera = Camera(self.map.width, self.map.height)
