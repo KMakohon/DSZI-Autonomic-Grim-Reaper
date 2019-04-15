@@ -23,20 +23,25 @@ class Game:
         self.player_img_R = pg.image.load(path.join(self.img_folder, PLAYER_IMG_R)).convert_alpha()
         self.person_img = pg.image.load(path.join(self.img_folder, PERSON_IMG)).convert_alpha()
         self.player_img_L = pg.image.load(path.join(self.img_folder, PLAYER_IMG_L)).convert_alpha()
+        self.drawPeople = True
 
     def new(self):
         self.reaper = pg.sprite.Group()
         self.people = pg.sprite.Group()
         self.walls = pg.sprite.Group()
-        Person(self,2,2)
         Person(self, 3, 6)
         Person(self, 10, 8)
         Person(self, 4,2)
 
-        self.agent = Reaper(self, 5, 5)
+        for i in range(100):
+           Person(self, randint(1,41), randint(1,35))
+
+        self.agent = Reaper(self, 41, 35)
         self.camera = Camera(self.map.width, self.map.height)
         for walls in self.map.tmxdata.layers[3]: #wszystkie obiekty w warstwie "walls"
                Wall(self, walls.x, walls.y, walls.width, walls.height)
+
+
 
     def run(self):
         self.playing = True
@@ -51,14 +56,19 @@ class Game:
 
     def update(self):
         self.reaper.update()
+        if self.drawPeople == True:
+            for sprite in self.people:
+                sprite.update()
         self.camera.update(self.agent)
 
     def draw(self):
         self.screen.blit(self.map_img, self.camera.apply_rect(self.map_rect))
         for sprite in self.reaper:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
-        for sprite in self.people:
-            self.screen.blit(sprite.image, self.camera.apply(sprite))
+        if self.drawPeople == True:
+            for sprite in self.people:
+                    sprite.draw(self.map_img)
+                    self.drawPeople = False
         pg.display.flip()
 
     def events(self):
