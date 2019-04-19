@@ -1,8 +1,12 @@
 import pygame as pg
 from settings import TILESIZE
+from collisions import collide_with_walls
+from settings import PLAYER_HIT_RECT
 from random import randint, normalvariate
 from math import floor
 
+
+vec = pg.math.Vector2
 
 class Person(pg.sprite.Sprite):
     def __init__(self, game, x, y, *rest):
@@ -12,8 +16,31 @@ class Person(pg.sprite.Sprite):
         self.game = game
         self.image = game.person_img
         self.rect = self.image.get_rect()
+        self.pos = vec(x, y) * TILESIZE
         self.rect.y = y * TILESIZE
         self.rect.x = x * TILESIZE
+        self.hit_rect = PLAYER_HIT_RECT
+        self.hit_rect.center = self.rect.center
+        collide_with_walls(self, self.game.walls, "x")
+        self.hit_rect.centery = self.pos.y
+        collide_with_walls(self, self.game.walls, "y")
+        self.rect.center = self.hit_rect.center
+        self.vel = vec(0, 0)
+
+    def update(self):
+        self.rect.center = self.pos
+        self.pos += self.vel
+        self.rect = self.image.get_rect()
+        self.rect.center = self.pos
+        self.hit_rect.centerx = self.pos.x
+        for i in range(1,4):
+            collide_with_walls(self, self.game.walls, 'x', 2)
+            self.hit_rect.centery = self.pos.y
+            collide_with_walls(self, self.game.walls, 'y', 2)
+            self.rect.center = self.hit_rect.center
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
         if (len(rest) == 6):
             self.age = rest[0]
             self.disease = rest[1]
@@ -28,3 +55,4 @@ class Person(pg.sprite.Sprite):
             self.lawful = randint(0, 100)
             self.money = floor(normalvariate(1000, 500))
             self. gender = randint(0, 1)
+
