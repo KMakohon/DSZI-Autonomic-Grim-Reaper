@@ -31,7 +31,7 @@ class Game:
         self.walls = pg.sprite.Group()
         Person(self, 3, 6)
         Person(self, 10, 8)
-        Person(self, 4,2)
+        Person(self, 4, 2,1,1,1,1,1)
 
         for i in range(100):
            Person(self, randint(1,41), randint(1,35))
