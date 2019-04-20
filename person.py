@@ -2,12 +2,15 @@ import pygame as pg
 from settings import TILESIZE
 from collisions import collide_with_walls
 from settings import PLAYER_HIT_RECT
+from random import randint, normalvariate
+from math import floor
+
 
 vec = pg.math.Vector2
 
-
 class Person(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, *rest):
+        self.rest = rest
         self.groups = game.people
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -30,7 +33,7 @@ class Person(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
         self.hit_rect.centerx = self.pos.x
-        for i in range(1,3):
+        for i in range(1,4):
             collide_with_walls(self, self.game.walls, 'x', 2)
             self.hit_rect.centery = self.pos.y
             collide_with_walls(self, self.game.walls, 'y', 2)
@@ -38,3 +41,18 @@ class Person(pg.sprite.Sprite):
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
+        if (len(self.rest) == 6):
+            self.age = self.rest[0]
+            self.disease = self.rest[1]
+            self.good = self.rest[2]
+            self.lawful = self.rest[3]
+            self.money = self.rest[4]
+            self.gender = self.rest[5]
+        else:
+            self.age = randint(0, 50) + randint(0, 25) + randint(0, 25)
+            self.disease = randint(0, 10)
+            self.good = randint(0, 100)
+            self.lawful = randint(0, 100)
+            self.money = floor(normalvariate(1000, 500))
+            self. gender = randint(0, 1)
+
