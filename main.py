@@ -29,14 +29,14 @@ class Game:
         self.reaper = pg.sprite.Group()
         self.people = pg.sprite.Group()
         self.walls = pg.sprite.Group()
-        Person(self, 3, 6)
-        Person(self, 10, 8)
-        Person(self, 4, 2,1,1,1,1,1)
+        #Person(self, 3, 6)
+        #Person(self, 10, 8)
+        #Person(self, 4,2)
 
-        for i in range(100):
+        for i in range(50):
            Person(self, randint(1,41), randint(1,35))
 
-        self.agent = Reaper(self, 41, 35)
+        self.agent = Reaper(self, 2, 2)
         self.camera = Camera(self.map.width, self.map.height)
         for walls in self.map.tmxdata.layers[3]: #wszystkie obiekty w warstwie "walls"
                Wall(self, walls.x, walls.y, walls.width, walls.height)
@@ -49,6 +49,7 @@ class Game:
             self.events()
             self.update()
             self.draw()
+
 
     def quit(self):
         pg.quit()
@@ -66,6 +67,9 @@ class Game:
         for sprite in self.reaper:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         if self.drawPeople == True:
+            print(self.people)
+            #print(self.agent.pos/64)
+            #time.sleep(10)
             for sprite in self.people:
                     sprite.draw(self.map_img)
                     self.drawPeople = False
@@ -78,6 +82,9 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                print(pg.mouse.get_pos())
+                self.agent.go_to(self, pg.mouse.get_pos())
 
 
 g = Game()
