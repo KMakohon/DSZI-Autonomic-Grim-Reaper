@@ -26,6 +26,25 @@ class Person(pg.sprite.Sprite):
         collide_with_walls(self, self.game.walls, "y")
         self.rect.center = self.hit_rect.center
         self.vel = vec(0, 0)
+        if (len(self.rest) == 6):
+            self.age = self.rest[0]
+            self.disease = self.rest[1]
+            self.good = self.rest[2]
+            self.lawful = self.rest[3]
+            self.money = self.rest[4]
+            self.gender = self.rest[5]
+        else:
+            self.age = randint(0, 50) + randint(0, 25) + randint(0, 25)
+            self.disease = randint(0, 10)
+            self.good = randint(0, 100)
+            self.lawful = randint(0, 100)
+            self.money = floor(normalvariate(1000, 500))
+            self. gender = randint(0, 1)
+
+    def banish(self):
+        self.image = self.game.dead_img
+        self.update()
+        self.draw(self.game.map_img)
 
     def update(self):
         self.rect.center = self.pos
@@ -41,18 +60,5 @@ class Person(pg.sprite.Sprite):
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
-        if (len(self.rest) == 6):
-            self.age = self.rest[0]
-            self.disease = self.rest[1]
-            self.good = self.rest[2]
-            self.lawful = self.rest[3]
-            self.money = self.rest[4]
-            self.gender = self.rest[5]
-        else:
-            self.age = randint(0, 50) + randint(0, 25) + randint(0, 25)
-            self.disease = randint(0, 10)
-            self.good = randint(0, 100)
-            self.lawful = randint(0, 100)
-            self.money = floor(normalvariate(1000, 500))
-            self. gender = randint(0, 1)
+
 

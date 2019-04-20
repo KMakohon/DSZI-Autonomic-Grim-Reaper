@@ -13,8 +13,12 @@ class Game:
     img_folder = path.join(game_folder, 'images')
     map_folder = path.join(game_folder, 'maps')
 
+
+
+
     def __init__(self):
         pg.init()
+        self.clock = pg.time.Clock()
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.map = TiledMap(path.join(self.map_folder, 'Szi1v2.tmx'))
@@ -24,16 +28,15 @@ class Game:
         self.person_img = pg.image.load(path.join(self.img_folder, PERSON_IMG)).convert_alpha()
         self.player_img_L = pg.image.load(path.join(self.img_folder, PLAYER_IMG_L)).convert_alpha()
         self.drawPeople = True
+        self.dead_img = pg.image.load(path.join(self.img_folder, DEAD_IMG)).convert_alpha()
+
 
     def new(self):
         self.reaper = pg.sprite.Group()
         self.people = pg.sprite.Group()
         self.walls = pg.sprite.Group()
-        #Person(self, 3, 6)
-        #Person(self, 10, 8)
-        #Person(self, 4,2)
 
-        for i in range(50):
+        for i in range(5000):
            Person(self, randint(1,41), randint(1,35))
 
         self.agent = Reaper(self, 2, 2)
@@ -41,11 +44,13 @@ class Game:
         for walls in self.map.tmxdata.layers[3]: #wszystkie obiekty w warstwie "walls"
                Wall(self, walls.x, walls.y, walls.width, walls.height)
 
+        self.czcionka = pg.font.SysFont("arial", 20)
 
 
     def run(self):
         self.playing = True
         while self.playing:
+            self.dt = self.clock.tick(FPS) / 1000.0
             self.events()
             self.update()
             self.draw()
@@ -63,6 +68,10 @@ class Game:
         self.camera.update(self.agent)
 
     def draw(self):
+        self.text = "Zostalo " + str(len(self.people)) + " ludzi."
+        self.text2 = "Kostucha wykonala juz " + str(self.agent.countsteps) + " kroki."
+        self.text_render = self.czcionka.render(self.text,1,(250,250,250))
+        self.text_render2 = self.czcionka.render(self.text2,1,(250,250,250))
         self.screen.blit(self.map_img, self.camera.apply_rect(self.map_rect))
         for sprite in self.reaper:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
@@ -71,8 +80,11 @@ class Game:
             #print(self.agent.pos/64)
             #time.sleep(10)
             for sprite in self.people:
-                    sprite.draw(self.map_img)
-                    self.drawPeople = False
+                sprite.draw(self.map_img)
+            self.drawPeople = False
+        self.screen.blit(self.text_render, (10, 10))
+        self.screen.blit(self.text_render2, (10, 30))
+
         pg.display.flip()
 
     def events(self):
