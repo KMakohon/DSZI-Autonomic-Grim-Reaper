@@ -3,7 +3,7 @@ from os import path
 from reaper import *
 from tilemap import *
 from person import *
-from wall import *
+from map_objects import *
 
 from random import randint
 
@@ -29,26 +29,39 @@ class Game:
         self.player_img_L = pg.image.load(path.join(self.img_folder, PLAYER_IMG_L)).convert_alpha()
         self.drawPeople = True
         self.dead_img = pg.image.load(path.join(self.img_folder, DEAD_IMG)).convert_alpha()
-
-
-    def new(self):
         self.reaper = pg.sprite.Group()
         self.people = pg.sprite.Group()
+        self.grasses = pg.sprite.Group()
         self.walls = pg.sprite.Group()
+        self.roads = pg.sprite.Group()
+        self.indoors = pg.sprite.Group()
+        self.dirt = pg.sprite.Group()
+        self.font = pg.font.SysFont("arial", 20)
 
-        for i in range(5000):
-           Person(self, randint(1,41), randint(1,35))
-
+        self.playing = True
+        for i in range(40):
+            Person(self, randint(1, 41), randint(1, 35))
         self.agent = Reaper(self, 2, 2)
         self.camera = Camera(self.map.width, self.map.height)
-        for walls in self.map.tmxdata.layers[3]: #wszystkie obiekty w warstwie "walls"
-               Wall(self, walls.x, walls.y, walls.width, walls.height)
 
-        self.czcionka = pg.font.SysFont("arial", 20)
+    def new(self):
+        for grass in self.map.tmxdata.layers[3]:
+            Grass(self, grass.x, grass.y, grass.width, grass.height)
+
+        for road in self.map.tmxdata.layers[5]:
+            Road(self, road.x, road.y, road.width, road.height)
+
+        for indoor in self.map.tmxdata.layers[6]:
+            Indoor(self, indoor.x, indoor.y, indoor.width, indoor.height)
+
+        for dirt in self.map.tmxdata.layers[7]:
+            Dirt(self, dirt.x, dirt.y, dirt.width, dirt.height)
+
+        for walls in self.map.tmxdata.layers[4]: #wszystkie obiekty w warstwie "walls"
+            Wall(self, walls.x, walls.y, walls.width, walls.height)
 
 
     def run(self):
-        self.playing = True
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000.0
             self.events()
@@ -62,28 +75,25 @@ class Game:
 
     def update(self):
         self.reaper.update()
-        if self.drawPeople == True:
+        if self.drawPeople:
             for sprite in self.people:
                 sprite.update()
         self.camera.update(self.agent)
 
     def draw(self):
-        self.text = "Zostalo " + str(len(self.people)) + " ludzi."
-        self.text2 = "Kostucha wykonala juz " + str(self.agent.countsteps) + " kroki."
-        self.text_render = self.czcionka.render(self.text,1,(250,250,250))
-        self.text_render2 = self.czcionka.render(self.text2,1,(250,250,250))
+        text = "Zostalo " + str(len(self.people)) + " ludzi."
+        text2 = "Kostucha wykonala juz " + str(self.agent.countsteps) + " kroki."
+        text_render = self.font.render(text, 1, (250, 250, 250))
+        text_render2 = self.font.render(text2, 1, (250, 250, 250))
         self.screen.blit(self.map_img, self.camera.apply_rect(self.map_rect))
         for sprite in self.reaper:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
-        if self.drawPeople == True:
-            print(self.people)
-            #print(self.agent.pos/64)
-            #time.sleep(10)
+        if self.drawPeople:
             for sprite in self.people:
                 sprite.draw(self.map_img)
             self.drawPeople = False
-        self.screen.blit(self.text_render, (10, 10))
-        self.screen.blit(self.text_render2, (10, 30))
+        self.screen.blit(text_render, (10, 10))
+        self.screen.blit(text_render2, (10, 30))
 
         pg.display.flip()
 
@@ -95,7 +105,6 @@ class Game:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
             if event.type == pg.MOUSEBUTTONDOWN:
-                print(pg.mouse.get_pos())
                 self.agent.go_to(self, pg.mouse.get_pos())
 
 
