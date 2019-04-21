@@ -4,6 +4,10 @@ import pygame as pg
 def collide_hit_rect(one, two):
     return one.hit_rect.colliderect(two.rect)
 
+def grass_collide(one, two):
+    return two.hit_rect.collidepoint(one.hit_rect.x+32, one.hit_rect.y+32)
+#    return two.hit_rect.contains(one) (musi byc cala kostucha w trawie)
+
 
 def collide_with_walls(sprite, group, dir, k=2):
     if dir == 'x':

@@ -1,8 +1,9 @@
 from settings import TILESIZE, PLAYER_SPEED, PLAYER_HIT_RECT
 from collisions import *
-vec = pg.math.Vector2
 from math import floor
-from time import sleep
+
+
+vec = pg.math.Vector2
 
 
 class Reaper(pg.sprite.Sprite):
@@ -16,7 +17,7 @@ class Reaper(pg.sprite.Sprite):
         self.hit_rect.center = self.rect.center
         self.pos = vec(x, y) * TILESIZE
         self.countsteps = 0
-
+        self.target = vec(0, 0)
 
     def get_keys(self):
         self.vel = vec(0, 0)
@@ -45,24 +46,17 @@ class Reaper(pg.sprite.Sprite):
         self.hit_rect.centery = self.pos.y
         collide_with_walls(self, self.game.walls, 'y')
         self.rect.center = self.hit_rect.center
-        #print(str(self.game.agent.pos / 64))
-        #if(collide_with_people(self, self.game.people, 'x') or collide_with_people(self, self.game.people, 'y')):
-           #self.game.drawPeople =  <- kolizje z ludźmi, na kiedyś
 
     def go_to(self, game, newpos):
-        self.target = vec(0,0)
-        self.target.x = newpos[0]
-        self.target.y = newpos[1]
+        self.target = vec(newpos[0], newpos[1])
         self.pos.y = floor(self.pos.y)
         self.pos.x = floor(self.pos.x)
         self.target.x = self.target.x - game.camera.x
         self.target.y = self.target.y - game.camera.y
-        self.target.x = (self.target.x - self.target.x%16) + 16
-        self.target.y = self.target.y - self.target.y%16 + 16
-        print(self.target)
+        self.target.x = (self.target.x - self.target.x % 16) + 16
+        self.target.y = (self.target.y - self.target.y % 16) + 16
         oldposx = 0
         oldposy = 0
-        #print(game.camera.x)
         while(True):
             if(oldposx == self.pos.x and oldposy == self.pos.y):
                 break
@@ -71,34 +65,45 @@ class Reaper(pg.sprite.Sprite):
             if self.target.x == self.pos.x and self.target.y == self.pos.y:
                 break
             if self.target.x > self.pos.x:
-                self.pos.x += 16
+                self.pos.x += 1
                 if self.target.x - self.pos.x > 16 and (self.image == self.game.player_img_L):
                     self.image = self.game.player_img_R
                     self.countsteps += 1
                 #prawo
             if self.target.x < self.pos.x:
-                self.pos.x -= 16
+                self.pos.x -= 1
                 if self.pos.x - self.target.x > 16 and self.image == self.game.player_img_R:
                         self.image = self.game.player_img_L
                         self.countsteps += 1
                 #lewo
             if self.target.y > self.pos.y:
-                self.pos.y += 16
+                self.pos.y += 1
                 #dol
             if self.target.y < self.pos.y:
-                self.pos.y -= 16
+                self.pos.y -= 1
                 #gora
             hits = pg.sprite.spritecollide(self, self.game.people, True, collide_hit_rect)
             if hits:
-                print("Chomik")
                 for sprite in hits:
                     sprite.banish()
-            print(self.game.people)
-            sleep(0.02)
+            grasses = pg.sprite.spritecollide(self, self.game.grasses, False, grass_collide)
+
+            if grasses:
+                print("Trawa")
+            roads = pg.sprite.spritecollide(self,self.game.roads, False, grass_collide)
+
+            if roads:
+                print("Droga")
+
+            indoors = pg.sprite.spritecollide(self, self.game.indoors, False, grass_collide)
+            if indoors:
+                print("Wnetrze")
+
+            dirt = pg.sprite.spritecollide(self, self.game.dirt, False, grass_collide)
+            if dirt:
+                print("Ziemia")
+
             self.countsteps += 1
             game.update()
             game.draw()
         self.countsteps -= 1
-
-
-
