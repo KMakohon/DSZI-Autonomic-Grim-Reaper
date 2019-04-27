@@ -1,33 +1,4 @@
-from pyswip import Prolog
-#import pygame as pg
 from math import fabs, sqrt
-'''
-
-prolog = Prolog()
-prolog.consult("aStar.pl")
-
-explored = []
-actions = ["Up", "Down", "Wight", "Left", "Go"]
-fringe = []
-#vec = pg.math.Vector2
-#Istate = vec(1, 1) * 64
-#GoalTest = vec(4, 4) *64
-
-#prolog.query()
-
-
-def graphsearch(Fringe, Explored):
-    return prolog.query("fringe_add(Fringe, [], Fringe)")
-
-
-print(prolog.query("initial(State)"))
-print(prolog.query("fringe_new(node(nil, nil-State)-0, Fringe)"))
-print(prolog.query("fringe_add(1,1,Fringe)"))
-k = prolog.query("fringe_select(Fringe,1,1)")
-
-prolog.query("fringe_add()")
-'''
-
 
 class State:
 
@@ -159,56 +130,4 @@ print(k.pop())
 print(k.pop())
 print(k.pop())
 print(k.pop())
-'''
-
-
-
-
-
-#print(graphsearch(fringe, explored))
-#print("Chomik")
-
-'''
-def succ(x, fringe):
-    pass
-
-def priority (x):
-    return 10
-#tutaj trzeba wypisac kost zależny od grida
-
-def reconstruct_path(endpos, elem):
-    print("rekonstrukcja")
-#tutaj powinien pojawić sie ciąg akcji zbudowny z patern i action
-
-
-class stan:
-    def __init__ (self, parent, action, p, posX, posY):
-        self.parent = parent
-        self.action = action
-        self.p = p
-        self.posX = posX
-        self.posY = posY
-
-def graphsearch(startpos, endpos):
-    startpos = startpos
-    endpos = endpos
-    fringe = []
-    hq.heapify(fringe)
-    explored = []
-    hq.heappush(fringe, startpos)
-
-    while fringe is not None:
-        elem = hq.heappop(fringe)
-        if elem is endpos:
-            return reconstruct_path(endpos, elem)
-        explored.append(elem)
-
-    for (akcja, stan) in succ(elem, fringe):
-        p = priority(stan)
-        if (not stan in fringe) and (not stan in explored):
-            hq.heappush(fringe,stan(elem, akcja, p))
-        elif stan in fringe and stan.p > p:
-            stan.p = p
-
-    return 0
 '''
