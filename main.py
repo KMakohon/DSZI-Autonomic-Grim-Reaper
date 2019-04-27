@@ -4,9 +4,7 @@ from reaper import *
 from tilemap import *
 from person import *
 from map_objects import *
-
 from random import randint
-
 
 class Game:
     game_folder = path.dirname(__file__)
