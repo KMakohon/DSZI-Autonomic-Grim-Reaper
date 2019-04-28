@@ -16,7 +16,6 @@ class State:
             return True
         else:
             return False
-
     def go_right(self, reap):
         new = State(self.x+1, self.y)
         new.parent = self
