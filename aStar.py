@@ -1,4 +1,6 @@
 from math import fabs, sqrt
+from reaper import *
+
 
 class State:
 
@@ -14,31 +16,33 @@ class State:
             return True
         else:
             return False
-
-    def go_right(self):
+    def go_right(self, reap):
         new = State(self.x+1, self.y)
         new.parent = self
-        new.cost = self.cost + 1
-        if new.x == 2 and new.y == 2:
-            new.cost += 10
+        reap.pos = (new.x * TILESIZE, new.y * TILESIZE)
+        new.cost = self.cost + reap.whereAmI()
         return new
 
-    def go_up(self):
+    def go_up(self, reap):
         new = State(self.x, self.y-1)
         new.parent = self
-        new.cost = self.cost + 1
+        reap.pos = (new.x * TILESIZE, new.y * TILESIZE)
+        new.cost = self.cost + reap.whereAmI()
         return new
 
-    def go_left(self):
+    def go_left(self,reap):
         new = State(self.x-1, self.y)
         new.parent = self
-        new.cost = self.cost + 1
+        reap.pos = (new.x * TILESIZE, new.y * TILESIZE)
+        new.cost = self.cost + reap.whereAmI()
         return new
 
-    def go_down(self):
+    def go_down(self,reap):
         new = State(self.x, self.y+1)
         new.parent = self
-        new.cost = self.cost + 1
+        reap.pos = (new.x * TILESIZE, new.y * TILESIZE)
+        new.cost = self.cost + reap.whereAmI()
+
         return new
 
 
@@ -58,14 +62,16 @@ class PriorityQueue:
     def __init__(self, goal):
         self.obj_list = []
         self.priority_list = []
-        self.explored = []
+
+        #self.explored = []
         self.goal = goal
 
-    def ifexplored(self, value):
-        for exp in self.explored:
-            if exp.x == value.x and exp.y == value.y:
-                return True
-        return False
+#    def ifexplored(self, value):
+ #       for exp in self.explored:
+  #          if exp.x == value.x and exp.y == value.y:
+   #             return True
+    #    return False
+
 
     def push(self, value, priority):
         #print(len(self.explored))
@@ -85,35 +91,59 @@ class PriorityQueue:
         self.priority_list.remove(self.priority_list[tmp])
         return output
 
-start = State(1,2)
-end = State(15,15)
-Queue = PriorityQueue(end)
-Queue.push(start,start.distance(end))
-explored = []
-pos = start
-count = 0
-
-while(not(pos.x == end.x and pos.y == end.y)):
-    count+=1
-    #print(Queue.obj_list[i])
-    pos = Queue.pop()
-    if pos not in explored:
-        print("dodaje")
-        explored.append(pos)
-    else:
-        continue
-    #print(pos)
-    for action in pos.actions:
-        newState = action()
-        #print(newState)
-        Queue.push(newState, newState.distance(end))
+#start = State(1,2)
+#end = State(15,15)
 
 
-while pos.parent is not None:
-    print(pos)
-    pos = pos.parent
 
-print(count)
+def Astar(game,startx, starty, endx, endy):
+    reap = ScoutReaper(game, startx, starty)
+    endx = endx - game.camera.x
+    endy = endy - game.camera.y
+    start = State(int(startx//TILESIZE), int(starty//TILESIZE))
+    end = State (int(endx//TILESIZE), int(endy//TILESIZE))
+
+    print(end)
+
+    Queue = PriorityQueue(end)
+    Queue.push(start,start.distance(end))
+    explored = []
+    pos = start
+    count = 0
+
+   # while(True):
+    #    reap.pos = (endx, endy)
+     #   print(reap.pos)
+      #  reap.whereAmI()
+
+
+    while(not(pos.x == end.x and pos.y == end.y)):
+        count+=1
+        #print(Queue.obj_list[i])
+        pos = Queue.pop()
+        if pos not in explored:
+            #print("dodaje")
+            explored.append(pos)
+        else:
+            continue
+        #print(reap.pos)
+        reap.pos = vec(pos.x*TILESIZE, pos.y*TILESIZE)
+        #print(reap.whereAmI())
+        #print(pos)
+        for action in pos.actions:
+            newstate = action(reap)
+            #print(newState)
+            Queue.push(newstate, newstate.distance(end))
+            #print("Akcja: ", action, " Koszt obecny: ", newstate.cost)
+    del reap
+    outputtab = []
+
+
+    while pos.parent is not None:
+        outputtab.append(pos)
+        pos = pos.parent
+    return outputtab
+
 '''
 k = PriorityQueue()
 a = State(2,2)
