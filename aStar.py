@@ -1,6 +1,7 @@
 from math import fabs, sqrt
 from reaper import *
 
+
 class State:
 
     def __init__(self, x, y):
@@ -15,7 +16,6 @@ class State:
             return True
         else:
             return False
-
     def go_right(self, reap):
         new = State(self.x+1, self.y)
         new.parent = self
@@ -42,6 +42,7 @@ class State:
         new.parent = self
         reap.pos = (new.x * TILESIZE, new.y * TILESIZE)
         new.cost = self.cost + reap.whereAmI()
+
         return new
 
 
@@ -61,6 +62,7 @@ class PriorityQueue:
     def __init__(self, goal):
         self.obj_list = []
         self.priority_list = []
+
         #self.explored = []
         self.goal = goal
 
@@ -69,6 +71,7 @@ class PriorityQueue:
   #          if exp.x == value.x and exp.y == value.y:
    #             return True
     #    return False
+
 
     def push(self, value, priority):
         #print(len(self.explored))
