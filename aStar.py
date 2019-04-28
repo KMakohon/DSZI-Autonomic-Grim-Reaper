@@ -1,6 +1,7 @@
 from math import fabs, sqrt
 from reaper import *
 
+
 class State:
 
     def __init__(self, x, y):
@@ -42,6 +43,7 @@ class State:
         new.parent = self
         reap.pos = (new.x * TILESIZE, new.y * TILESIZE)
         new.cost = self.cost + reap.whereAmI()
+
         return new
 
 
@@ -51,7 +53,7 @@ class State:
     def distance(self, goal):
         distance_x = fabs(goal.x - self.x)
         distance_y = fabs(goal.y - self.y)
-        return sqrt(distance_x*distance_x + distance_y*distance_y) + self.cost
+        return floor(sqrt(distance_x*distance_x + distance_y*distance_y)) + self.cost
 
     def __del__(self):
         pass
@@ -61,6 +63,7 @@ class PriorityQueue:
     def __init__(self, goal):
         self.obj_list = []
         self.priority_list = []
+
         #self.explored = []
         self.goal = goal
 
@@ -69,6 +72,7 @@ class PriorityQueue:
   #          if exp.x == value.x and exp.y == value.y:
    #             return True
     #    return False
+
 
     def push(self, value, priority):
         #print(len(self.explored))
@@ -87,6 +91,12 @@ class PriorityQueue:
         self.obj_list.remove(self.obj_list[tmp])
         self.priority_list.remove(self.priority_list[tmp])
         return output
+
+    def find(self, finder):
+        for i in range (len(self.obj_list)):
+            if finder == self.obj_list[i]:
+                return i
+        return -1
 
 #start = State(1,2)
 #end = State(15,15)
@@ -114,10 +124,24 @@ def Astar(game,startx, starty, endx, endy):
       #  reap.whereAmI()
 
 
-    while(not(pos.x == end.x and pos.y == end.y)):
-        count+=1
+    while(True):
+        #print("Rozmiar Queue: ", len(Queue.obj_list))
+        #count+=1
         #print(Queue.obj_list[i])
+        if len(Queue.obj_list) < 1:
+            return -1
+
         pos = Queue.pop()
+
+        if pos == end:
+            break
+
+        if pos in explored:
+            for i in range (len(explored)):
+                if pos == explored[i]:
+                    if pos.cost < explored[i].cost:
+                        explored[i] = pos
+
         if pos not in explored:
             #print("dodaje")
             explored.append(pos)
@@ -130,7 +154,20 @@ def Astar(game,startx, starty, endx, endy):
         for action in pos.actions:
             newstate = action(reap)
             #print(newState)
+            print(newstate, " o koszcie:", newstate.distance(end))
             Queue.push(newstate, newstate.distance(end))
+            #if pos not in Queue.obj_list and pos not in explored:
+            #    Queue.push(newstate, newstate.distance(end))
+            #else:
+             #   oldprior = Queue.priority_list[Queue.find(newstate)]
+              #  if oldprior > pos.distance(end):
+               #     Queue.priority_list[Queue.find(newstate)] = pos.distance()
+                #    Queue.obj_list[Queue.find(newstate)] = pos
+
+
+
+
+            #Queue.push(newstate, newstate.distance(end))
             #print("Akcja: ", action, " Koszt obecny: ", newstate.cost)
     del reap
     outputtab = []

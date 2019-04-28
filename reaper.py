@@ -85,20 +85,22 @@ class Reaper(pg.sprite.Sprite):
         self.rect.center = self.hit_rect.center
 
     def go(self, howtogo):
-
         for i in range (len(howtogo)-1, -1, -1):
+            print("x: ", howtogo[i].x, ", y: ", howtogo[i].x)
             self.pos.x = howtogo[i].x * TILESIZE + 32
             self.pos.y = howtogo[i].y * TILESIZE + 32
-            #self.rect = self.image.get_rect()
-            #self.rect.center = self.pos
-            #self.hit_rect.centerx = self.pos.x
-            #self.hit_rect.centery = self.pos.y
-#            collide_with_walls(self, self.game.walls, 'y')
-            #self.rect.center = self.hit_rect.center
+            self.countsteps = howtogo[i].cost
+            self.rect = self.image.get_rect()
+            self.rect.center = self.pos
+            self.hit_rect.centerx = self.pos.x
+            self.hit_rect.centery = self.pos.y
+            #collide_with_walls(self, self.game.walls, 'x')
+            #collide_with_walls(self, self.game.walls, 'y')
+            self.rect.center = self.hit_rect.center
 
             self.game.update()
             self.game.draw()
-            sleep(0.2)
+            sleep(0.5)
 
     def go_to(self, game, newpos):
         self.target = vec(newpos[0], newpos[1])

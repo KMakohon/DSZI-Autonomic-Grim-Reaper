@@ -7,12 +7,11 @@ from map_objects import *
 from random import randint
 from aStar import *
 
+
 class Game:
     game_folder = path.dirname(__file__)
     img_folder = path.join(game_folder, 'images')
     map_folder = path.join(game_folder, 'maps')
-
-
 
 
     def __init__(self):
