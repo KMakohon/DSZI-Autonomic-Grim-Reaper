@@ -14,8 +14,6 @@ class Game:
     map_folder = path.join(game_folder, 'maps')
 
 
-
-
     def __init__(self):
         pg.init()
         self.clock = pg.time.Clock()
