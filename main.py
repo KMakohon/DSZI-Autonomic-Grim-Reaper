@@ -4,9 +4,8 @@ from reaper import *
 from tilemap import *
 from person import *
 from map_objects import *
-
 from random import randint
-
+from aStar import *
 
 class Game:
     game_folder = path.dirname(__file__)
@@ -105,7 +104,10 @@ class Game:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
             if event.type == pg.MOUSEBUTTONDOWN:
-                self.agent.go_to(self, pg.mouse.get_pos())
+                howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, pg.mouse.get_pos()[0], pg.mouse.get_pos()[1])
+                print(howtogo)
+                self.agent.go(howtogo)
+                #self.agent.go_to(self, pg.mouse.get_pos())
 
 
 g = Game()
