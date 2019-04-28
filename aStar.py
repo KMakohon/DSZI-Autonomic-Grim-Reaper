@@ -1,21 +1,67 @@
 from math import fabs, sqrt
 from reaper import *
 
-
 class State:
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, direction):
         self.x = x
         self.y = y
-        self.actions = [self.go_right, self.go_up, self.go_down, self.go_left]
+        self.actions = [self.go, self.turnleft, self.turnright]
         self.parent = None
+        self.direction = direction
         self.cost = 0
 
     def __eq__(self, other):
-        if self.x == other.x and self.y == other.y:
+        if self.x == other.x and self.y == other.y and self.direction == other.direction:
             return True
         else:
             return False
+
+    def go(self,reap):
+        if self.direction == 1:
+            new = State(self.x + 1, self.y, self.direction)
+            new.parent = self
+            reap.pos = (new.x * TILESIZE, new.y * TILESIZE)
+            new.cost = self.cost + reap.whereAmI()
+            return new
+        if self.direction == 2:
+            new = State(self.x, self.y + 1, self.direction)
+            new.parent = self
+            reap.pos = (new.x * TILESIZE, new.y * TILESIZE)
+            new.cost = self.cost + reap.whereAmI()
+            return new
+        if self.direction == 3:
+            new = State(self.x - 1, self.y, self.direction)
+            new.parent = self
+            reap.pos = (new.x * TILESIZE, new.y * TILESIZE)
+            new.cost = self.cost + reap.whereAmI()
+            return new
+        if self.direction == 4:
+            new = State(self.x, self.y - 1, self.direction)
+            new.parent = self
+            reap.pos = (new.x * TILESIZE, new.y * TILESIZE)
+            new.cost = self.cost + reap.whereAmI()
+            return new
+
+    def turnleft(self, reap):
+        new = State(self.x, self.y, self.direction)
+        new.parent = self
+        new.direction = self.direction - 1
+        if new.direction == 0:
+            new.direction = 4
+        new.cost = self.cost + 1
+        return new
+
+    def turnright(self, reap):
+        new = State(self.x, self.y, self.direction)
+        new.parent = self
+        new.direction = self.direction + 1
+        if new.direction == 5:
+            new.direction = 1
+        new.cost = self.cost + 1
+        return new
+
+
     def go_right(self, reap):
         new = State(self.x+1, self.y)
         new.parent = self
@@ -44,6 +90,7 @@ class State:
         new.cost = self.cost + reap.whereAmI()
 
         return new
+
 
 
     def __str__(self):
@@ -102,12 +149,12 @@ class PriorityQueue:
 
 
 
-def Astar(game,startx, starty, endx, endy):
+def Astar(game,startx, starty, endx, endy, direction):
     reap = ScoutReaper(game, startx, starty)
     endx = endx - game.camera.x
     endy = endy - game.camera.y
-    start = State(int(startx//TILESIZE), int(starty//TILESIZE))
-    end = State (int(endx//TILESIZE), int(endy//TILESIZE))
+    start = State(int(startx//TILESIZE), int(starty//TILESIZE), direction)
+    end = State (int(endx//TILESIZE), int(endy//TILESIZE), 1)
 
     print(end)
 
@@ -132,7 +179,7 @@ def Astar(game,startx, starty, endx, endy):
 
         pos = Queue.pop()
 
-        if pos == end:
+        if pos.x == end.x and pos.y == end.y:
             break
 
         if pos in explored:

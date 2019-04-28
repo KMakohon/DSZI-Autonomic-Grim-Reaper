@@ -3,6 +3,7 @@ from collisions import *
 from math import floor
 from time import sleep
 
+
 vec = pg.math.Vector2
 
 
@@ -55,6 +56,7 @@ class Reaper(pg.sprite.Sprite):
         self.pos = vec(x, y) * TILESIZE
         self.countsteps = 0
         self.target = vec(0, 0)
+        self.direction = 1
 
     def get_keys(self):
         self.vel = vec(0, 0)
@@ -89,6 +91,24 @@ class Reaper(pg.sprite.Sprite):
             print("x: ", howtogo[i].x, ", y: ", howtogo[i].x)
             self.pos.x = howtogo[i].x * TILESIZE + 32
             self.pos.y = howtogo[i].y * TILESIZE + 32
+
+
+
+
+            if (howtogo[i].direction == 1):
+                self.image = self.game.player_img_R
+                print("R")
+            if (howtogo[i].direction == 3):
+                self.image = self.game.player_img_L
+                print("L")
+            if (howtogo[i].direction == 2):
+                print("D")
+                self.image = self.game.player_img_D
+            if (howtogo[i].direction == 4):
+                print("U")
+                self.image = self.game.player_img_U
+
+            self.direction = howtogo[i].direction
             self.countsteps = howtogo[i].cost
             self.rect = self.image.get_rect()
             self.rect.center = self.pos
