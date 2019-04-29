@@ -65,5 +65,45 @@ Szersze omówienie działania programu wymaga większego skupienia się na kodzi
   Jest to klasa stworzona po to, aby postać agenta zawsze była widoczna na ekranie. Posiada ona parametry pozwalające umiejscowić ją w środowisku oraz metody pozwalające zmieniać jej pozycję. 
 
 ---
+# Autonomic-Grim-Reaper - Algorytm A*
 
+Data: 28.04.2019
 
+---
+
+### Wstęp
+
+Celem tego przyrostu było zaimplementowanie algorytmu A* (A gwiazdka) umożliwiającego agentowi poruszanie się w najbardziej optymalny sposób. Funkcja została zaimplementowana przy użyciu kolejki priorytetowej o odwróconym priorytecie(w formie funkcji kosztu drogi). Każde pole zaimplementowane zostało jako obiekt(należący do klasy Walls, Grass, Road, Indoor lub Dirt). Wspomniana funkcja kosztu drogi nadaje wejściu na obiekt danej klasy odpowiedni koszt( Indoor - 1, Road - 2, Dirt - 3, Grass - 6).
+
+---
+
+### Zmiany
+
+- Powstały dwa nowe stany kostuchy - Kostucha idąca w górę i kostucha idąca w dół(wraz z nowymi obrazkami).
+
+- Model ruchu kostuchy został zmieniony. Zamiast poruszania się po wciśnięciu odpowiedniego klawisza strzałki kostucha porusza się przyjmując za cel miejsce kilknięcia myszą na mapie.
+
+- Kostucha może się obracać o 90 stopni (koszt jednego obrotu - 1).
+
+- Poprzedni model ruchu zakłądał możliwość ruchu w dowolnym kierunku. Teraz kostucha może się obracać oraz kierować przed siebie.
+
+- Plik wall.py został zastąpiąny przez plik map_objects.py. Plik ten zawiera klasy dla ścian, podłóg, dróg, trawy i ziemi. Klasy te były wymagane, aby zróżnicować teren oraz koszt przemieszczania się po danym terenie.
+
+- Plik reaper.py zawiera od teraz klasę pomocniczą scoutReaper, która umożliwia algorytmowi A* określenie podłoża.
+
+- W pliku collisions.py powstała nowa definicja kolizji, którą można traktować jak kolizja z "kałużą" - nie uniemożliwia przebycia terenu.
+
+---
+
+### Algorytm A*
+---
+
+Trzonem tego podprojektu jest plik aStar.py, w którym zaimplementowaliśmy algorytm A*. Zawiera on następujące klasy:
+
+- State() - Klasa opisuje stan, w którym może znajdować się kostucha. Zawiera podstawowe dane dla agenta (pozycja, kierunek, lista akcji możliwych do wykonania, koszt dotarcia do danego stanu ze stanu początkowego) oraz metody: eq(pomocnicza), go (implementująca akcję poruszania się do przodu), turnleft, turnright(implementujące odpowiednio obrót w lewo i obrót w prawo) oraz metodę pełniącą rolę funkcji kosztu (suma kosztów odwiedzenia stanu oraz odległości do celu).
+
+- PriorityQueue() - Klasa będąca prostą implementacją kolejki priorytetowej, gdzie najwyższy priorytet mają elementy o najniższej wartości priority. Klasa zawiera metody push() oraz pop() słuzące do włożenia elementu do kolejki oraz zdjęcia z kolejki elementu o najniższym priority oraz pomocniczą metodę find().
+
+Oraz funkcję Astar() implementującą algorytm A* na przestrzeni stanów. Po znalezieniu odpowiedniej trasy A* przekazuje listę akcji agentowi, który niezwłocznie je wykonuje. Aby poszczególne kroki wykonwywania algorytmu były widoczne (aby kostucha poruszała się krok po kroku) użyto funkcji sleep(). Dla ułatwienia analizy działania w lewym górnym rogu mapy umieściliśmy prosty licznik kosztu pokonanej drogi dla jednego wywołania aStar.
+
+---
