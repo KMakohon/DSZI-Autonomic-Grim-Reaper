@@ -144,6 +144,8 @@ class PriorityQueue:
                 return i
         return -1
 
+    def __del__(self):
+        pass
 #start = State(1,2)
 #end = State(15,15)
 
@@ -156,7 +158,6 @@ def Astar(game,startx, starty, endx, endy, direction):
     start = State(int(startx//TILESIZE), int(starty//TILESIZE), direction)
     end = State (int(endx//TILESIZE), int(endy//TILESIZE), 1)
 
-    print(end)
 
     Queue = PriorityQueue(end)
     Queue.push(start,start.distance(end))
@@ -200,7 +201,9 @@ def Astar(game,startx, starty, endx, endy, direction):
         for action in pos.actions:
             newstate = action(reap)
             #print(newState)
-            print(newstate, " o koszcie:", newstate.distance(end))
+            #print(newstate, " o koszcie:", newstate.distance(end))
+            if (newstate.distance(end) > 10000):
+                continue
             Queue.push(newstate, newstate.distance(end))
             #if pos not in Queue.obj_list and pos not in explored:
             #    Queue.push(newstate, newstate.distance(end))
@@ -222,6 +225,8 @@ def Astar(game,startx, starty, endx, endy, direction):
     while pos.parent is not None:
         outputtab.append(pos)
         pos = pos.parent
+
+    del Queue
     return outputtab
 
 '''

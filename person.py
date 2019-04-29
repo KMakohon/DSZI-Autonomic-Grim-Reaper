@@ -17,8 +17,8 @@ class Person(pg.sprite.Sprite):
         self.image = game.person_img
         self.rect = self.image.get_rect()
         self.pos = vec(x, y) * TILESIZE
-        self.rect.y = y * TILESIZE
-        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE + 32
+        self.rect.x = x * TILESIZE + 32
         self.hit_rect = PLAYER_HIT_RECT
         self.hit_rect.center = self.rect.center
         collide_with_walls(self, self.game.walls, "x")
