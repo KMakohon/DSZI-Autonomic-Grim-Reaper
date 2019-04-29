@@ -65,18 +65,16 @@ Szersze omówienie działania programu wymaga większego skupienia się na kodzi
   Jest to klasa stworzona po to, aby postać agenta zawsze była widoczna na ekranie. Posiada ona parametry pozwalające umiejscowić ją w środowisku oraz metody pozwalające zmieniać jej pozycję. 
 
 ---
-# Autonomic-Grim-Reaper - Algorytm A*
+### Autonomic-Grim-Reaper - Algorytm A*
 
 Data: 28.04.2019
 
----
 
 ### Wstęp
 
 Celem tego przyrostu było zaimplementowanie algorytmu A* (A gwiazdka) umożliwiającego agentowi poruszanie się w najbardziej optymalny sposób. Funkcja została zaimplementowana przy użyciu kolejki priorytetowej o odwróconym priorytecie(w formie funkcji kosztu drogi). Każde pole zaimplementowane zostało jako obiekt(należący do klasy Walls, Grass, Road, Indoor lub Dirt). Wspomniana funkcja kosztu drogi nadaje wejściu na obiekt danej klasy odpowiedni koszt( Indoor - 1, Road - 2, Dirt - 3, Grass - 6).
 
 ---
-
 ### Zmiany
 
 - Powstały dwa nowe stany kostuchy - Kostucha idąca w górę i kostucha idąca w dół(wraz z nowymi obrazkami).
@@ -94,9 +92,8 @@ Celem tego przyrostu było zaimplementowanie algorytmu A* (A gwiazdka) umożliwi
 - W pliku collisions.py powstała nowa definicja kolizji, którą można traktować jak kolizja z "kałużą" - nie uniemożliwia przebycia terenu.
 
 ---
-
 ### Algorytm A*
----
+
 
 Trzonem tego podprojektu jest plik aStar.py, w którym zaimplementowaliśmy algorytm A*. Zawiera on następujące klasy:
 
