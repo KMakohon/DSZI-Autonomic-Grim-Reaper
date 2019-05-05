@@ -1,9 +1,47 @@
 from settings import TILESIZE, PLAYER_SPEED, PLAYER_HIT_RECT
 from collisions import *
 from math import floor
+from time import sleep
 
 
 vec = pg.math.Vector2
+
+
+class ScoutReaper(pg.sprite.Sprite):
+
+    def __init__(self, game, x, y):
+        self.groups = pg.sprite.Group()
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = game.player_img_R
+        self.rect = self.image.get_rect()
+        self.hit_rect = PLAYER_HIT_RECT
+        self.hit_rect.center = self.rect.center
+        self.pos = vec(x, y)
+
+    def whereAmI(self):
+        self.rect.center = self.pos
+        self.hit_rect.centerx = self.pos[0]
+        self.hit_rect.centery = self.pos[1]
+
+        walls = pg.sprite.spritecollide(self, self.game.walls, False, grass_collide )
+        if walls:
+            return 1000000
+        grasses = pg.sprite.spritecollide(self, self.game.grasses, False, grass_collide)
+        if grasses:
+            return 6
+        roads = pg.sprite.spritecollide(self, self.game.roads, False, grass_collide)
+        if roads:
+            return 2
+        indoors = pg.sprite.spritecollide(self, self.game.indoors, False, grass_collide)
+        if indoors:
+            return 1
+        dirt = pg.sprite.spritecollide(self, self.game.dirt, False, grass_collide)
+        if dirt:
+            return 3
+        return 100000000
+
+
 
 
 class Reaper(pg.sprite.Sprite):
@@ -18,6 +56,7 @@ class Reaper(pg.sprite.Sprite):
         self.pos = vec(x, y) * TILESIZE
         self.countsteps = 0
         self.target = vec(0, 0)
+        self.direction = 1
 
     def get_keys(self):
         self.vel = vec(0, 0)
@@ -46,6 +85,42 @@ class Reaper(pg.sprite.Sprite):
         self.hit_rect.centery = self.pos.y
         collide_with_walls(self, self.game.walls, 'y')
         self.rect.center = self.hit_rect.center
+
+    def go(self, howtogo):
+        for i in range (len(howtogo)-1, -1, -1):
+            #print("x: ", howtogo[i].x, ", y: ", howtogo[i].x)
+            self.pos.x = howtogo[i].x * TILESIZE + 32
+            self.pos.y = howtogo[i].y * TILESIZE + 32
+
+
+
+
+            if (howtogo[i].direction == 1):
+                self.image = self.game.player_img_R
+
+            if (howtogo[i].direction == 3):
+                self.image = self.game.player_img_L
+
+            if (howtogo[i].direction == 2):
+
+                self.image = self.game.player_img_D
+            if (howtogo[i].direction == 4):
+
+                self.image = self.game.player_img_U
+
+            self.direction = howtogo[i].direction
+            self.countsteps = howtogo[i].cost
+            self.rect = self.image.get_rect()
+            self.rect.center = self.pos
+            self.hit_rect.centerx = self.pos.x
+            self.hit_rect.centery = self.pos.y
+            #collide_with_walls(self, self.game.walls, 'x')
+            #collide_with_walls(self, self.game.walls, 'y')
+            self.rect.center = self.hit_rect.center
+
+            self.game.update()
+            self.game.draw()
+            sleep(0.1)
 
     def go_to(self, game, newpos):
         self.target = vec(newpos[0], newpos[1])
@@ -107,3 +182,4 @@ class Reaper(pg.sprite.Sprite):
             game.update()
             game.draw()
         self.countsteps -= 1
+

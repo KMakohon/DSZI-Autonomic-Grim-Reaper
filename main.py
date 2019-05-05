@@ -1,19 +1,16 @@
 import sys
 from os import path
-from reaper import *
 from tilemap import *
 from person import *
 from map_objects import *
-
 from random import randint
+from aStar import *
 
 
 class Game:
     game_folder = path.dirname(__file__)
     img_folder = path.join(game_folder, 'images')
     map_folder = path.join(game_folder, 'maps')
-
-
 
 
     def __init__(self):
@@ -24,6 +21,9 @@ class Game:
         self.map = TiledMap(path.join(self.map_folder, 'Szi1v2.tmx'))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
+
+        self.player_img_U = pg.image.load(path.join(self.img_folder, PLAYER_IMG_U)).convert_alpha()
+        self.player_img_D = pg.image.load(path.join(self.img_folder, PLAYER_IMG_D)).convert_alpha()
         self.player_img_R = pg.image.load(path.join(self.img_folder, PLAYER_IMG_R)).convert_alpha()
         self.person_img = pg.image.load(path.join(self.img_folder, PERSON_IMG)).convert_alpha()
         self.player_img_L = pg.image.load(path.join(self.img_folder, PLAYER_IMG_L)).convert_alpha()
@@ -105,7 +105,10 @@ class Game:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
             if event.type == pg.MOUSEBUTTONDOWN:
-                self.agent.go_to(self, pg.mouse.get_pos())
+                howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, pg.mouse.get_pos()[0], pg.mouse.get_pos()[1], self.agent.direction)
+                #print(howtogo)
+                self.agent.go(howtogo)
+                #self.agent.go_to(self, pg.mouse.get_pos())
 
 
 g = Game()

@@ -5,7 +5,7 @@ def collide_hit_rect(one, two):
     return one.hit_rect.colliderect(two.rect)
 
 def grass_collide(one, two):
-    return two.hit_rect.collidepoint(one.hit_rect.x+32, one.hit_rect.y+32)
+    return two.hit_rect.collidepoint(one.hit_rect.x+25, one.hit_rect.y+25)
 #    return two.hit_rect.contains(one) (musi byc cala kostucha w trawie)
 
 
