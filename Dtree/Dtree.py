@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.model_selection import train_test_split  # Import train_test_split function
+from sklearn.model_selection import train_test_split
 from id3 import Id3Estimator
 from id3 import export_graphviz
 
@@ -15,10 +15,11 @@ print(dataset.head())  # show first 5 rows
 print ("Dataset Lenght:: ", len(dataset))
 print ("Dataset Shape:: ", dataset.shape)
 
-estimator = Id3Estimator()
-
 X = dataset.drop('dead', axis=1)
 y = dataset['dead']
+
+#tworzenie drzewa
+estimator = Id3Estimator()
 
 #Podział na dane treningowe i dane testowe
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
