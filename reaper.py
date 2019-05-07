@@ -1,11 +1,12 @@
 from settings import TILESIZE, PLAYER_SPEED, PLAYER_HIT_RECT
+from Dtree.Dtree import *
 from collisions import *
 from math import floor
 from time import sleep
 
 
 vec = pg.math.Vector2
-
+estimator = BuildTree()
 
 class ScoutReaper(pg.sprite.Sprite):
 
@@ -92,7 +93,11 @@ class Reaper(pg.sprite.Sprite):
             self.pos.x = howtogo[i].x * TILESIZE + 32
             self.pos.y = howtogo[i].y * TILESIZE + 32
 
-
+            hits = pg.sprite.spritecollide(self, self.game.people, True, collide_hit_rect)
+            if hits:
+                for sprite in hits:
+                    if PredictDead(sprite,estimator) == 1:
+                        sprite.banish()
 
 
             if (howtogo[i].direction == 1):
@@ -161,6 +166,7 @@ class Reaper(pg.sprite.Sprite):
             if hits:
                 for sprite in hits:
                     sprite.banish()
+
             grasses = pg.sprite.spritecollide(self, self.game.grasses, False, grass_collide)
 
             if grasses:
