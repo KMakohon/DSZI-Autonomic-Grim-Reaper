@@ -13,3 +13,4 @@ PLAYER_IMG_L = 'reaperL.png'
 DEAD_IMG = 'dead2.png'
 PLAYER_HIT_RECT = pg.Rect(0, 0, 50, 50)
 FPS = 60
+PeopleType = ("man", "woman", "boy", "girl", "baby")

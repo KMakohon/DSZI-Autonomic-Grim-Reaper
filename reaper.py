@@ -1,10 +1,12 @@
-from settings import TILESIZE, PLAYER_SPEED, PLAYER_HIT_RECT
+from settings import TILESIZE, PLAYER_SPEED, PLAYER_HIT_RECT, PeopleType
+from Dtree.Dtree import *
 from collisions import *
 from math import floor
 from time import sleep
 
 
 vec = pg.math.Vector2
+estimator = BuildTree()
 
 
 class ScoutReaper(pg.sprite.Sprite):
@@ -42,8 +44,6 @@ class ScoutReaper(pg.sprite.Sprite):
         return 100000000
 
 
-
-
 class Reaper(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.reaper
@@ -58,6 +58,7 @@ class Reaper(pg.sprite.Sprite):
         self.target = vec(0, 0)
         self.direction = 1
 
+# deprecated method
     def get_keys(self):
         self.vel = vec(0, 0)
         keys = pg.key.get_pressed()
@@ -67,11 +68,11 @@ class Reaper(pg.sprite.Sprite):
             self.vel = vec(0, PLAYER_SPEED)
         if keys[pg.K_RIGHT]:
             self.vel = vec(PLAYER_SPEED, 0)
-            if (self.image == self.game.player_img_L):
+            if self.image == self.game.player_img_L:
                 self.image = self.game.player_img_R
         if keys[pg.K_LEFT]:
             self.vel = vec(-PLAYER_SPEED, 0)
-            if (self.image == self.game.player_img_R):
+            if self.image == self.game.player_img_R:
                 self.image = self.game.player_img_L
 
     def update(self):
@@ -88,23 +89,19 @@ class Reaper(pg.sprite.Sprite):
 
     def go(self, howtogo):
         for i in range (len(howtogo)-1, -1, -1):
-            #print("x: ", howtogo[i].x, ", y: ", howtogo[i].x)
             self.pos.x = howtogo[i].x * TILESIZE + 32
             self.pos.y = howtogo[i].y * TILESIZE + 32
 
-
-
-
-            if (howtogo[i].direction == 1):
+            if howtogo[i].direction == 1:
                 self.image = self.game.player_img_R
 
-            if (howtogo[i].direction == 3):
+            if howtogo[i].direction == 3:
                 self.image = self.game.player_img_L
 
-            if (howtogo[i].direction == 2):
+            if howtogo[i].direction == 2:
 
                 self.image = self.game.player_img_D
-            if (howtogo[i].direction == 4):
+            if howtogo[i].direction == 4:
 
                 self.image = self.game.player_img_U
 
@@ -114,14 +111,24 @@ class Reaper(pg.sprite.Sprite):
             self.rect.center = self.pos
             self.hit_rect.centerx = self.pos.x
             self.hit_rect.centery = self.pos.y
-            #collide_with_walls(self, self.game.walls, 'x')
-            #collide_with_walls(self, self.game.walls, 'y')
             self.rect.center = self.hit_rect.center
+
+            hits = pg.sprite.spritecollide(self, self.game.people, True, collide_hit_rect)
+            if hits:
+                for sprite in hits:
+                    print("Typ obiektu przewidziany przez siec: ", sprite.predictedtype)
+
+                    if sprite.predictedtype in PeopleType:
+
+                        if PredictDead(sprite,estimator) == 1:
+                            sprite.banish()
+                    sprite.show()
 
             self.game.update()
             self.game.draw()
             sleep(0.1)
 
+# deprecated method
     def go_to(self, game, newpos):
         self.target = vec(newpos[0], newpos[1])
         self.pos.y = floor(self.pos.y)
@@ -133,7 +140,7 @@ class Reaper(pg.sprite.Sprite):
         oldposx = 0
         oldposy = 0
         while(True):
-            if(oldposx == self.pos.x and oldposy == self.pos.y):
+            if oldposx == self.pos.x and oldposy == self.pos.y:
                 break
             oldposx = self.pos.x
             oldposy = self.pos.y
@@ -161,6 +168,7 @@ class Reaper(pg.sprite.Sprite):
             if hits:
                 for sprite in hits:
                     sprite.banish()
+
             grasses = pg.sprite.spritecollide(self, self.game.grasses, False, grass_collide)
 
             if grasses:

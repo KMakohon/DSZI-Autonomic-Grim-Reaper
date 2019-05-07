@@ -5,7 +5,7 @@ from person import *
 from map_objects import *
 from random import randint
 from aStar import *
-
+import NN.NeuralNetwork as NeuralNetwork
 
 class Game:
     game_folder = path.dirname(__file__)
@@ -37,9 +37,11 @@ class Game:
         self.indoors = pg.sprite.Group()
         self.dirt = pg.sprite.Group()
         self.font = pg.font.SysFont("arial", 20)
-
+        self.net = NeuralNetwork.load()
         self.playing = True
-        for i in range(40):
+        for k in range(40):
+            Person(self, randint(1,41), randint(1,35), "yes")
+        for i in range(20):
             Person(self, randint(1, 41), randint(1, 35))
         self.agent = Reaper(self, 2, 2)
         self.camera = Camera(self.map.width, self.map.height)
