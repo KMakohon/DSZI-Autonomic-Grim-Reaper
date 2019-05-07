@@ -1,6 +1,5 @@
 import sys
 from os import path
-from reaper import *
 from tilemap import *
 from person import *
 from map_objects import *
@@ -107,7 +106,7 @@ class Game:
                     self.quit()
             if event.type == pg.MOUSEBUTTONDOWN:
                 howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, pg.mouse.get_pos()[0], pg.mouse.get_pos()[1], self.agent.direction)
-                print(howtogo)
+                #print(howtogo)
                 self.agent.go(howtogo)
                 #self.agent.go_to(self, pg.mouse.get_pos())
 

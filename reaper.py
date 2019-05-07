@@ -29,7 +29,7 @@ class ScoutReaper(pg.sprite.Sprite):
             return 1000000
         grasses = pg.sprite.spritecollide(self, self.game.grasses, False, grass_collide)
         if grasses:
-            return 10
+            return 6
         roads = pg.sprite.spritecollide(self, self.game.roads, False, grass_collide)
         if roads:
             return 2
@@ -88,7 +88,7 @@ class Reaper(pg.sprite.Sprite):
 
     def go(self, howtogo):
         for i in range (len(howtogo)-1, -1, -1):
-            print("x: ", howtogo[i].x, ", y: ", howtogo[i].x)
+            #print("x: ", howtogo[i].x, ", y: ", howtogo[i].x)
             self.pos.x = howtogo[i].x * TILESIZE + 32
             self.pos.y = howtogo[i].y * TILESIZE + 32
 
@@ -97,15 +97,15 @@ class Reaper(pg.sprite.Sprite):
 
             if (howtogo[i].direction == 1):
                 self.image = self.game.player_img_R
-                print("R")
+
             if (howtogo[i].direction == 3):
                 self.image = self.game.player_img_L
-                print("L")
+
             if (howtogo[i].direction == 2):
-                print("D")
+
                 self.image = self.game.player_img_D
             if (howtogo[i].direction == 4):
-                print("U")
+
                 self.image = self.game.player_img_U
 
             self.direction = howtogo[i].direction
@@ -120,7 +120,7 @@ class Reaper(pg.sprite.Sprite):
 
             self.game.update()
             self.game.draw()
-            sleep(0.5)
+            sleep(0.1)
 
     def go_to(self, game, newpos):
         self.target = vec(newpos[0], newpos[1])
