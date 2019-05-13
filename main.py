@@ -6,6 +6,9 @@ from map_objects import *
 from random import randint
 from aStar import *
 import NN.NeuralNetwork as NeuralNetwork
+import GenAl as gal
+import time
+
 
 class Game:
     game_folder = path.dirname(__file__)
@@ -39,12 +42,23 @@ class Game:
         self.font = pg.font.SysFont("arial", 20)
         self.net = NeuralNetwork.load()
         self.playing = True
+        self.tourmanager = gal.TourManager()
+
+        self.agent = Reaper(self, 2, 2)
+        self.camera = Camera(self.map.width, self.map.height)
+
+        for i in range(6):
+            p = Person(self, randint(1,8), randint(1,8), "yes")
+            self.tourmanager.addPerson(p)
+        """
         for k in range(40):
             Person(self, randint(1,41), randint(1,35), "yes")
         for i in range(20):
             Person(self, randint(1, 41), randint(1, 35))
-        self.agent = Reaper(self, 2, 2)
-        self.camera = Camera(self.map.width, self.map.height)
+
+
+
+"""
 
     def new(self):
         for grass in self.map.tmxdata.layers[3]:
@@ -106,7 +120,26 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
+                if event.key == pg.K_SPACE:
+                    print(time.ctime(time.time()))
+                    pop = gal.Population(self.tourmanager, 6, True);
+                    print("Initial distance: " + str(pop.getFittest().getDistance()))
+
+                    # Evolve population for 50 generations
+                    ga = gal.GA(self.tourmanager)
+                    pop = ga.evolvePopulation(pop)
+                    for i in range(0, 60):
+                        pop = ga.evolvePopulation(pop)
+
+                    # Print final results
+                    print("Finished")
+                    print(time.ctime(time.time()))
+                    print("Final distance: " + str(pop.getFittest().getDistance()))
+                    print("Solution:")
+                    print(pop.getFittest())
+
             if event.type == pg.MOUSEBUTTONDOWN:
+
                 howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, pg.mouse.get_pos()[0], pg.mouse.get_pos()[1], self.agent.direction)
                 #print(howtogo)
                 self.agent.go(howtogo)
