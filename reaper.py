@@ -3,7 +3,7 @@ from Dtree.Dtree import *
 from collisions import *
 from math import floor
 from time import sleep
-
+import aStar
 
 vec = pg.math.Vector2
 estimator = BuildTree()
@@ -87,8 +87,16 @@ class Reaper(pg.sprite.Sprite):
         collide_with_walls(self, self.game.walls, 'y')
         self.rect.center = self.hit_rect.center
 
+    def distanceTo(self, person):
+        pom = aStar.Astar(self.game, self.pos[0], self.pos[1], person.pos[0], person.pos[1], 1)
+        return pom[0].cost
+
     def go(self, howtogo):
-        for i in range (len(howtogo)-1, -1, -1):
+        if isinstance(howtogo, int):
+            print("Bledny cel drogi")
+            return -1
+
+        for i in range(len(howtogo)-1, -1, -1):
             self.pos.x = howtogo[i].x * TILESIZE + 32
             self.pos.y = howtogo[i].y * TILESIZE + 32
 

@@ -5,7 +5,7 @@ from settings import PLAYER_HIT_RECT, PeopleType
 from random import randint, normalvariate
 from math import floor
 import NN.NeuralNetwork as NeuralNetwork
-
+import aStar
 
 vec = pg.math.Vector2
 
@@ -89,4 +89,6 @@ class Person(pg.sprite.Sprite):
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
-
+    def distanceTo(self, person):
+        pom = aStar.Astar(self.game, self.pos[0], self.pos[1], person.pos[0],person.pos[1], 1)
+        return pom[0].cost

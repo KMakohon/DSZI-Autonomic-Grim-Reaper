@@ -70,7 +70,7 @@ def getstats():
                 class_total[label] += 1
 
     for z in range(100):
-        print('Accuracy of %5s : %2d %%' % (
+        print('Dokladnosc przy klasie %5s : %2d %%' % (
             classes[z], 100 * class_correct[z] / class_total[z]))
 
 
@@ -136,18 +136,18 @@ def train():
             optimizer.step()
 
             if i % 2000 == 1999:
-                print('Przejśsie nr: %d, nr iteracji: %5d]' %
+                print('Epoka nr: %d, nr iteracji: %5d]' %
                       (epoch + 1, i + 1))
         getsuccess()
 
-    print('"Duza iteracja" zakonczona')
+    print('"Duza iteracja"(20 epok) zakonczona')
 
 
 dataiter = iter(testloader)
 
 
 while True:
-    toDo = input("What's to do now? ")
+    toDo = input("Co robic? ")
 
     if toDo == "quit":
         break
