@@ -8,7 +8,6 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 
-
 classes = [
     'apple', 'aquarium_fish', 'baby', 'bear', 'beaver', 'bed', 'bee', 'beetle',
     'bicycle', 'bottle', 'bowl', 'boy', 'bridge', 'bus', 'butterfly', 'camel',

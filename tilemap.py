@@ -2,7 +2,6 @@ import pytmx
 from settings import *
 
 
-
 class TiledMap:
     def __init__(self, filename):
         self.tmxdata = pytmx.load_pygame(filename, pixelalpha=True)

@@ -8,30 +8,33 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
+
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.conv1 = nn.Conv2d(3, 6, 5)
-        self.pool = nn.MaxPool2d(2, 2) # "Poolowanie" - zmniejszanie efektywnego rozmiaru obrazka dwukrotnie
+        self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(400, 250) #16 * 5 * 5
+        self.fc1 = nn.Linear(400, 250)
         self.fc2 = nn.Linear(250,160)
         self.fc3 = nn.Linear(160,100)
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 16*5*5) # 16 * 5 * 5
-        x = F.relu(self.fc1(x)) ##Funkcja aktywacji - Rectifier -> f(x) = max(x,0)
+        x = x.view(-1, 16*5*5)
+        x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = self.fc3(x) #dodatek
+        x = self.fc3(x)
         return x
+
 
 def load():
     net = Net()
     net.load_state_dict(torch.load('NN/LearnedNetwork.pt'))
     net.eval()
     return net
+
 
 def prepareImg(images):
     return torchvision.utils.make_grid(images)
@@ -59,21 +62,11 @@ dataiter = iter(testloader)
 def test(net):
     images, labels = dataiter.next()
 
-    # print images
     print('Obrazki przedstawiaja: ', ' '.join('%5s' % classes[labels[j]] for j in range(1)))
 
     print(labels[0])
 
-    ########################################################################
-    # Okay, now let us see what the neural network thinks these examples above are:
-
     outputs = net(images)
-
-    ########################################################################
-    # The outputs are energies for the 10 classes.
-    # The higher the energy for a class, the more the network
-    # thinks that the image is of the particular class.
-    # So, let's get the index of the highest energy:
     _, predicted = torch.max(outputs, 1)
     print('Przewidywany wynik: ', ' '.join('%5s' % classes[predicted[j]]
                                            for j in range(1)))
@@ -99,10 +92,10 @@ classes = [
 ]
 
 
-
 def createimg():
     images, labels = dataiter.next()
     return images
+
 
 def predictImg(net, images):
     outputs = net(images)
@@ -122,15 +115,15 @@ def example():
         image = createimg()
         result = predictImg(net, image)
         if result == "boy":
-            boy +=1
-        if (result == "girl"):
-            girl+=1
+            boy += 1
+        if result == "girl":
+            girl +=1
         if result == "baby":
-            baby+=1
+            baby += 1
         if result == "man":
-            man +=1
+            man += 1
         if result == "woman":
-            woman+=1
+            woman +=1
     print("boys: ", boy)
     print("girls: ", girl)
     print("men: ", man)

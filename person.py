@@ -1,7 +1,7 @@
 import pygame as pg
 from settings import TILESIZE
 from collisions import collide_with_walls
-from settings import PLAYER_HIT_RECT, PeopleType
+from settings import PLAYER_HIT_RECT
 from random import randint, normalvariate
 from math import floor
 import NN.NeuralNetwork as NeuralNetwork
@@ -9,9 +9,9 @@ import aStar
 
 vec = pg.math.Vector2
 
+
 class Person(pg.sprite.Sprite):
-    def __init__(self, game, x, y, isneuralhuman="no", *rest):
-        self.rest = rest
+    def __init__(self, game, x, y, neuraltype="none", *rest):
         self.groups = game.people
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -22,17 +22,13 @@ class Person(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE + 32
         self.hit_rect = PLAYER_HIT_RECT
         self.hit_rect.center = self.rect.center
-        collide_with_walls(self, self.game.walls, "x")
-        self.hit_rect.centery = self.pos.y
-        collide_with_walls(self, self.game.walls, "y")
-        self.rect.center = self.hit_rect.center
         self.vel = vec(0, 0)
         self.neuralimg = NeuralNetwork.createimg()
         self.predictedtype = NeuralNetwork.predictImg(self.game.net, self.neuralimg)
 
-        if isneuralhuman != "no":
+        if neuraltype != "none":
             while True:
-                if self.predictedtype not in PeopleType:
+                if self.predictedtype != neuraltype:
                     self.neuralimg = NeuralNetwork.createimg()
                     self.predictedtype = NeuralNetwork.predictImg(self.game.net, self.neuralimg)
                 else:
@@ -52,22 +48,21 @@ class Person(pg.sprite.Sprite):
             self.lawful = randint(0, 100)
             self.money = floor(normalvariate(1000, 500))
             self.gender = randint(0, 1)
-            if self.predictedtype == "baby" and self.age >= 5:
-                self.age = 5
-            if self.predictedtype == "man":
-                self.gender = 0
-            if self.predictedtype == "woman":
-                self.gender = 1
-            if self.predictedtype == "boy":
-                self.gender = 0
-                self.age = randint(10, 20)
-            if self.predictedtype == "girl":
-                self.gender = 1
-                self.age = randint(10, 20)
+        if self.predictedtype == "baby":
+            self.age = randint(1, 5)
+        elif self.predictedtype == "man":
+            self.gender = 0
+        elif self.predictedtype == "woman":
+            self.gender = 1
+        elif self.predictedtype == "boy":
+            self.gender = 0
+            self.age = randint(10, 20)
+        elif self.predictedtype == "girl":
+            self.gender = 1
+            self.age = randint(10, 20)
 
     def show(self):
         NeuralNetwork.imshow(self.neuralimg)
-
 
     def banish(self):
         self.image = self.game.dead_img
@@ -90,5 +85,5 @@ class Person(pg.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
     def distanceTo(self, person):
-        pom = aStar.Astar(self.game, self.pos[0], self.pos[1], person.pos[0],person.pos[1], 1)
+        pom = aStar.Astar(self.game, self.pos[0], self.pos[1], person.pos[0], person.pos[1], 1)
         return pom[0].cost
