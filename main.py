@@ -15,7 +15,6 @@ class Game:
     img_folder = path.join(game_folder, 'images')
     map_folder = path.join(game_folder, 'maps')
 
-
     def __init__(self):
         pg.init()
         self.clock = pg.time.Clock()
@@ -24,7 +23,6 @@ class Game:
         self.map = TiledMap(path.join(self.map_folder, 'Szi1v2.tmx'))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
-
         self.player_img_U = pg.image.load(path.join(self.img_folder, PLAYER_IMG_U)).convert_alpha()
         self.player_img_D = pg.image.load(path.join(self.img_folder, PLAYER_IMG_D)).convert_alpha()
         self.player_img_R = pg.image.load(path.join(self.img_folder, PLAYER_IMG_R)).convert_alpha()
@@ -48,7 +46,7 @@ class Game:
         self.camera = Camera(self.map.width, self.map.height)
 
         for i in range(6):
-            p = Person(self, randint(1,8), randint(1,8), "yes")
+            p = Person(self, randint(1,8), randint(1,8), "boy")
             self.tourmanager.addPerson(p)
         """
         for k in range(40):
@@ -56,9 +54,7 @@ class Game:
         for i in range(20):
             Person(self, randint(1, 41), randint(1, 35))
 
-
-
-"""
+        """
 
     def new(self):
         for grass in self.map.tmxdata.layers[3]:
@@ -73,25 +69,22 @@ class Game:
         for dirt in self.map.tmxdata.layers[7]:
             Dirt(self, dirt.x, dirt.y, dirt.width, dirt.height)
 
-        for walls in self.map.tmxdata.layers[4]: #wszystkie obiekty w warstwie "walls"
+        for walls in self.map.tmxdata.layers[4]:
             Wall(self, walls.x, walls.y, walls.width, walls.height)
-
 
     def run(self):
         while self.playing:
-            self.dt = self.clock.tick(FPS) / 1000.0
             self.events()
             self.update()
             self.draw()
-
 
     def quit(self):
         pg.quit()
         sys.exit()
 
     def update(self):
-        self.reaper.update()
         if self.drawPeople:
+            self.reaper.update()
             for sprite in self.people:
                 sprite.update()
         self.camera.update(self.agent)
@@ -110,7 +103,6 @@ class Game:
             self.drawPeople = False
         self.screen.blit(text_render, (10, 10))
         self.screen.blit(text_render2, (10, 30))
-
         pg.display.flip()
 
     def events(self):
@@ -137,13 +129,9 @@ class Game:
                     print("Final distance: " + str(pop.getFittest().getDistance()))
                     print("Solution:")
                     print(pop.getFittest())
-
             if event.type == pg.MOUSEBUTTONDOWN:
-
                 howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, pg.mouse.get_pos()[0], pg.mouse.get_pos()[1], self.agent.direction)
-                #print(howtogo)
                 self.agent.go(howtogo)
-                #self.agent.go_to(self, pg.mouse.get_pos())
 
 
 g = Game()
