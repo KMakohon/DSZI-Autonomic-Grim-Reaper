@@ -1,5 +1,7 @@
 from math import fabs, sqrt, floor
 from reaper import *
+import heapq
+import time
 
 class State:
 
@@ -91,8 +93,6 @@ class State:
 
         return new
 
-
-
     def __str__(self):
         return "x = " + str(self.x) + ", y = " + str(self.y)
 
@@ -103,6 +103,18 @@ class State:
 
     def __del__(self):
         pass
+
+    def __lt__(self, other):
+        return (self.cost + self.distance(endtarget)) < (other.cost + other.distance(endtarget))
+
+
+endtarget = State(2,2,1)
+
+
+def smallestState(heap):
+    return heap.cost + heap.distance(endtarget)
+
+
 
 class PriorityQueue:
 
@@ -135,29 +147,33 @@ class PriorityQueue:
         pass
 
 def Astar(game,startx, starty, endx, endy, direction):
+
+    heap = []
+    #starttime = time.time()
+
     reap = ScoutReaper(game, endx, endy)
 
     endx = endx - game.camera.x
     endy = endy - game.camera.y
     start = State(int(startx//TILESIZE), int(starty//TILESIZE), direction)
     end = State (int(endx//TILESIZE), int(endy//TILESIZE), 1)
-
+    endtarget = end
     reap.pos.x = startx
     reap.pos.y = starty
 
 
-    Queue = PriorityQueue(end)
-    Queue.push(start,start.distance(end))
+    #Queue = PriorityQueue(end)
+    heapq.heappush(heap, start)
+    #Queue.push(start,start.distance(end))
     explored = []
     pos = start
     count = 0
 
     while(True):
-        if len(Queue.obj_list) < 1:
-            return -1
-
-        pos = Queue.pop()
-
+        #if len(Queue.obj_list) < 1:
+         #   return -1
+        pos = heapq.heappop(heap)
+        #pos = Queue.pop()
         if pos.x == end.x and pos.y == end.y:
             break
 
@@ -176,14 +192,14 @@ def Astar(game,startx, starty, endx, endy, direction):
             newstate = action(reap)
             if (newstate.distance(end) > 10000):
                 continue
-            Queue.push(newstate, newstate.distance(end))
+            heapq.heappush(heap, newstate)
+            #Queue.push(newstate, newstate.distance(end))
     outputtab = []
-
 
     while pos.parent is not None:
         outputtab.append(pos)
         pos = pos.parent
 
-    del Queue
+    #del Queue
+    #print(time.time() - starttime)
     return outputtab
-
