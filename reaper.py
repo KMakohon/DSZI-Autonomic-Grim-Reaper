@@ -1,3 +1,4 @@
+from __future__ import division
 from settings import TILESIZE, TIMESLEEP, PLAYER_HIT_RECT, PEOPLE_TYPE
 from Dtree.Dtree import *
 from collisions import *
@@ -54,7 +55,7 @@ class Reaper(pg.sprite.Sprite):
         self.rect.center = self.pos
 
     def distanceTo(self, person):
-        pom = aStar.Astar(self.game, self.pos[0], self.pos[1], person.pos[0], person.pos[1], 1)
+        pom = aStar.Astar(self.game, self.pos.x, self.pos.y, person.pos.x, person.pos.y, 1)
         return pom[0].cost
 
     def go(self, howtogo):

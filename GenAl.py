@@ -1,9 +1,12 @@
 import math
 import random
+import pygame as pg
 import person
 import aStar
 from settings import TILESIZE
 
+
+vec = pg.math.Vector2
 
 class TourManager:
     destinationPersons = []
@@ -16,6 +19,10 @@ class TourManager:
 
     def numberOfPersons(self):
         return len(self.destinationPersons)
+
+    def checkAllDistance(self):
+        for person in self.destinationPersons:
+            person.checkDistance(self.destinationPersons)
 
 
 class Tour:
@@ -42,8 +49,14 @@ class Tour:
     def __repr__(self):
         geneString = ""
         for i in range(0, self.tourSize()):
-            geneString += str(self.getPerson(i).pos[0]/TILESIZE) + " " + str(self.getPerson(i).pos[1]/TILESIZE) + "\n"
+            geneString += str(self.getPerson(i).pos.x/TILESIZE) + " " + str(self.getPerson(i).pos.y/TILESIZE) + "\n"
         return geneString
+
+    def get(self):
+        tab = []
+        for i in range(0, self.tourSize()):
+            tab.append(vec(self.getPerson(i).pos.x, self.getPerson(i).pos.y)/TILESIZE)
+        return tab
 
     def generateIndividual(self):
         for personIndex in range(0, self.tourmanager.numberOfPersons()):
@@ -53,8 +66,8 @@ class Tour:
     def getPerson(self, tourPosition):
         return self.tour[tourPosition]
 
-    def setPerson(self, tourPosition, city):
-        self.tour[tourPosition] = city
+    def setPerson(self, tourPosition, person):
+        self.tour[tourPosition] = person
         self.fitness = 0.0
         self.distance = 0
 

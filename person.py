@@ -1,3 +1,4 @@
+from __future__ import division
 import pygame as pg
 from settings import TILESIZE
 from collisions import collide_with_walls
@@ -25,7 +26,7 @@ class Person(pg.sprite.Sprite):
         self.vel = vec(0, 0)
         self.neuralimg = NeuralNetwork.createimg()
         self.predictedtype = NeuralNetwork.predictImg(self.game.net, self.neuralimg)
-
+        self.dict = {}
         if neuraltype != "none":
             while True:
                 if self.predictedtype != neuraltype:
@@ -85,5 +86,16 @@ class Person(pg.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
     def distanceTo(self, person):
-        pom = aStar.Astar(self.game, self.pos[0], self.pos[1], person.pos[0], person.pos[1], 1)
-        return pom[0].cost
+        return self.dict.get(person)
+
+    def checkDistance(self, people):
+        for person in people:
+
+            pom = aStar.Astar(self.game, self.pos.x, self.pos.y, person.pos.x, person.pos.y, 1)
+
+            if len(pom) < 1:
+                self.dict[person] = 0.01
+            else:
+                self.dict[person] = pom[0].cost
+
+

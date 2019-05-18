@@ -40,6 +40,7 @@ class Game:
         self.font = pg.font.SysFont("arial", 20)
         self.net = NeuralNetwork.load()
         self.playing = True
+
         self.tourmanager = gal.TourManager()
 
         self.agent = Reaper(self, 2, 2)
@@ -113,6 +114,8 @@ class Game:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
                 if event.key == pg.K_SPACE:
+                    self.tourmanager.checkAllDistance()
+                    print("ok")
                     print(time.ctime(time.time()))
                     pop = gal.Population(self.tourmanager, 6, True);
                     print("Initial distance: " + str(pop.getFittest().getDistance()))
@@ -120,7 +123,7 @@ class Game:
                     # Evolve population for 50 generations
                     ga = gal.GA(self.tourmanager)
                     pop = ga.evolvePopulation(pop)
-                    for i in range(0, 60):
+                    for i in range(0, 100):
                         pop = ga.evolvePopulation(pop)
 
                     # Print final results
@@ -129,6 +132,7 @@ class Game:
                     print("Final distance: " + str(pop.getFittest().getDistance()))
                     print("Solution:")
                     print(pop.getFittest())
+                    #self.agent.go(pop.getFittest())
             if event.type == pg.MOUSEBUTTONDOWN:
                 howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, pg.mouse.get_pos()[0], pg.mouse.get_pos()[1], self.agent.direction)
                 self.agent.go(howtogo)

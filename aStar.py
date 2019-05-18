@@ -1,7 +1,7 @@
 from math import fabs, sqrt, floor
 from reaper import *
 import heapq
-import time
+
 
 class State:
 
@@ -115,41 +115,9 @@ def smallestState(heap):
     return heap.cost + heap.distance(endtarget)
 
 
-
-class PriorityQueue:
-
-    def __init__(self, goal):
-        self.obj_list = []
-        self.priority_list = []
-        self.goal = goal
-
-
-    def push(self, value, priority):
-        self.obj_list.append(value)
-        self.priority_list.append(priority)
-
-    def pop(self):
-        if len(self.obj_list) == 0:
-            return -1
-        tmp = self.priority_list.index(min(self.priority_list))
-        output = self.obj_list[tmp]
-        self.obj_list.remove(self.obj_list[tmp])
-        self.priority_list.remove(self.priority_list[tmp])
-        return output
-
-    def find(self, finder):
-        for i in range (len(self.obj_list)):
-            if finder == self.obj_list[i]:
-                return i
-        return -1
-
-    def __del__(self):
-        pass
-
 def Astar(game,startx, starty, endx, endy, direction):
 
     heap = []
-    #starttime = time.time()
 
     reap = ScoutReaper(game, endx, endy)
 
@@ -162,18 +130,15 @@ def Astar(game,startx, starty, endx, endy, direction):
     reap.pos.y = starty
 
 
-    #Queue = PriorityQueue(end)
     heapq.heappush(heap, start)
-    #Queue.push(start,start.distance(end))
     explored = []
     pos = start
     count = 0
 
     while(True):
-        #if len(Queue.obj_list) < 1:
-         #   return -1
+
         pos = heapq.heappop(heap)
-        #pos = Queue.pop()
+
         if pos.x == end.x and pos.y == end.y:
             break
 
@@ -193,13 +158,11 @@ def Astar(game,startx, starty, endx, endy, direction):
             if (newstate.distance(end) > 10000):
                 continue
             heapq.heappush(heap, newstate)
-            #Queue.push(newstate, newstate.distance(end))
+
     outputtab = []
 
     while pos.parent is not None:
         outputtab.append(pos)
         pos = pos.parent
 
-    #del Queue
-    #print(time.time() - starttime)
     return outputtab
