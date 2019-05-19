@@ -6,10 +6,7 @@ from map_objects import *
 from random import randint
 from aStar import *
 import NN.NeuralNetwork as NeuralNetwork
-import GenAl as gal
-import time
-import math
-
+import GA.GenAl as gal
 
 class Game:
     game_folder = path.dirname(__file__)
@@ -48,18 +45,12 @@ class Game:
         self.agent = Reaper(self, 2, 2)
         self.camera = Camera(self.map.width, self.map.height)
 
-        p = Person(self, 8, 1, "boy")
-   #     self.tourmanager.addPerson(p)
-        p = Person(self, 4, 3, "boy")
-  #      self.tourmanager.addPerson(p)
-        p = Person(self, 3, 6, "boy")
-   #     self.tourmanager.addPerson(p)
-        p = Person(self, 5, 8, "boy")
-     #   self.tourmanager.addPerson(p)
-        p = Person(self, 6, 6, "boy")
-    #    self.tourmanager.addPerson(p)
-        p = Person(self, 7, 1, "boy")
-    #    self.tourmanager.addPerson(p)
+        Person(self, 8, 1, "boy")
+        Person(self, 4, 3, "boy")
+        Person(self, 4, 6, "boy")
+        Person(self, 5, 8, "boy")
+        Person(self, 6, 6, "boy")
+        Person(self, 7, 1, "boy")
 
         """
         for i in range(6):
@@ -143,12 +134,13 @@ class Game:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
                 if event.key == pg.K_SPACE:
+
+                    #add people to tourmanager
                     for person in self.people:
                         self.tourmanager.addPerson(person)
 
-
+                    #create A* table for all person in tourmanager
                     self.tourmanager.checkAllDistance()
-                    print(time.ctime(time.time()))
                     pop = gal.Population(self.tourmanager, 6, True);
                     print("Initial distance: " + str(pop.getFittest().getDistance()))
 
@@ -160,61 +152,31 @@ class Game:
 
                     # Print final results
                     print("Finished")
-                    print(time.ctime(time.time()))
                     print("Final distance: " + str(pop.getFittest().getDistance()))
                     print("Solution:")
                     b = pop.getFittest()
 
+                    #smallest distance reaper->someone
+
                     c = self.AstarWithReaper(b)
                     print(b)
-                    count = 1
+                    tmp = 0
                     for i in range(len(b)):
                         if b[i].pos == c.pos:
                             tmp = i
                             break
-                    print(tmp)
 
                     howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, b[tmp].pos.x-1, b[tmp].pos.y-1, self.agent.direction)
                     self.agent.go(howtogo)
-                    newtab = []
+                    lenght = len(b)
+                    newtab = b[tmp:lenght] + b[0:tmp]
 
-                    for i in range(tmp+1, len(b)):
-                        newtab.append(b[i])
-                    for i in range(0, tmp):
-                        newtab.append(b[i])
                     for i in range (len(newtab)):
-                        print(newtab[i].pos//TILESIZE)
+                        #print(newtab[i].pos//TILESIZE)
                         howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, newtab[i].pos.x-1, newtab[i].pos.y-1,
                                         self.agent.direction)
                         self.agent.go(howtogo)
-
-            #                 while(count):
-   #                     print(i)
-   #                     if b[i].pos.x == c.pos.x and b[i].pos.y == c.pos.y:
-    #                        count = 0
-#                            for j in range(i, len(b)):
- #                               print("teraz ide do: ", b[j].pos.x, b[j].pos.y)
-  #                              self.scout.pos = (b[j].pos.x, b[j].pos.y)
-   #                             print("koszt tuptania to ", self.scout.whereAmI())
-           #                     howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, (float(b[j].pos.x)),
-          #                                      (float(b[j].pos.y)), self.agent.direction)
-         #                       self.agent.go(howtogo)
-        #                    for j in range(0, i):
-       #                         print("wchodzem do druga pentla")
-      #                          print("teraz ide do: ", b[j].pos.x, b[j].pos.y)
-     #                           howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, (float(b[j].pos.x)),
-    #                                            (float(b[j].pos.y)), self.agent.direction)
-   #                             self.agent.go(howtogo)
-  #                      else:
- #                           i+=1
-#
- #  #                 self.tourmanager = gal.TourManager()
-#
-    #
-   #                 for i in range(0, len(b)):
-  #                      howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, b[i].pos.x, b[i].pos.y, self.agent.direction)
- #                       print("Zrobiłem)")
-#                        self.agent.go(howtogo)
+                    print("Done")
 
             if event.type == pg.MOUSEBUTTONDOWN:
                 howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, pg.mouse.get_pos()[0], pg.mouse.get_pos()[1], self.agent.direction)

@@ -52,12 +52,6 @@ class Tour:
             geneString += str(self.getPerson(i).pos.x/TILESIZE) + " " + str(self.getPerson(i).pos.y/TILESIZE) + "\n"
         return geneString
 
-    def get(self):
-        tab = []
-        for i in range(0, self.tourSize()):
-            tab.append(vec(self.getPerson(i).pos.x, self.getPerson(i).pos.y))
-        return tab
-
     def generateIndividual(self):
         for personIndex in range(0, self.tourmanager.numberOfPersons()):
             self.setPerson(personIndex, self.tourmanager.getPerson(personIndex))
@@ -136,7 +130,7 @@ class Population:
 class GA:
     def __init__(self, tourmanager):
         self.tourmanager = tourmanager
-        self.mutationRate = 0.5
+        self.mutationRate = 0.25
         self.tournamentSize = 5
         self.elitism = True
 
@@ -185,11 +179,11 @@ class GA:
             if random.random() < self.mutationRate:
                 tourPos2 = int(tour.tourSize() * random.random())
 
-                city1 = tour.getPerson(tourPos1)
-                city2 = tour.getPerson(tourPos2)
+                person1 = tour.getPerson(tourPos1)
+                person2 = tour.getPerson(tourPos2)
 
-                tour.setPerson(tourPos2, city1)
-                tour.setPerson(tourPos1, city2)
+                tour.setPerson(tourPos2, person1)
+                tour.setPerson(tourPos1, person2)
 
     def tournamentSelection(self, pop):
         tournament = Population(self.tourmanager, self.tournamentSize, False)

@@ -139,7 +139,7 @@ def Astar(game,startx, starty, endx, endy, direction):
     while(True):
 
         if len(heap) == 0:
-            print("JESTEM POJEBANY")
+            print("stos jest pusty")
             return False
 
         pos = heapq.heappop(heap)
