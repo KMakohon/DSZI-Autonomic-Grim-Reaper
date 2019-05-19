@@ -41,6 +41,7 @@ class State:
         if self.direction == 4:
             new = State(self.x, self.y - 1, self.direction)
             new.parent = self
+
             reap.pos = (new.x * TILESIZE, new.y * TILESIZE)
             new.cost = self.cost + reap.whereAmI()
             return new
@@ -136,6 +137,10 @@ def Astar(game,startx, starty, endx, endy, direction):
     count = 0
 
     while(True):
+
+        if len(heap) == 0:
+            print("JESTEM POJEBANY")
+            return False
 
         pos = heapq.heappop(heap)
 

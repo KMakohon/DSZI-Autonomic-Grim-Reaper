@@ -9,7 +9,7 @@ def grass_collide(one, two):
     return two.hit_rect.collidepoint(one.hit_rect.x+25, one.hit_rect.y+25)
 
 
-def collide_with_walls(sprite, group, dir, k=1):
+def collide_with_walls(sprite, group, dir, k=2):
     if dir == 'x':
         hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
         if hits:

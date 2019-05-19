@@ -19,9 +19,9 @@ class Person(pg.sprite.Sprite):
         self.image = game.person_img
         self.rect = self.image.get_rect()
         self.pos = vec(x, y) * TILESIZE
-        self.rect.y = y * TILESIZE + 32
-        self.rect.x = x * TILESIZE + 32
-        self.hit_rect = PLAYER_HIT_RECT
+        self.rect.y = y * TILESIZE
+        self.rect.x = x * TILESIZE
+        self.hit_rect = pg.Rect(0,0,64,64)
         self.hit_rect.center = self.rect.center
         self.vel = vec(0, 0)
         self.neuralimg = NeuralNetwork.createimg()
@@ -77,9 +77,9 @@ class Person(pg.sprite.Sprite):
         self.rect.center = self.pos
         self.hit_rect.centerx = self.pos.x
         for i in range(1,4):
-            collide_with_walls(self, self.game.walls, 'x', 2)
+            collide_with_walls(self, self.game.walls, 'x', 1)
             self.hit_rect.centery = self.pos.y
-            collide_with_walls(self, self.game.walls, 'y', 2)
+            collide_with_walls(self, self.game.walls, 'y', 1)
             self.rect.center = self.hit_rect.center
 
     def draw(self, screen):
@@ -97,5 +97,4 @@ class Person(pg.sprite.Sprite):
                 self.dict[person] = 0.01
             else:
                 self.dict[person] = pom[0].cost
-
 

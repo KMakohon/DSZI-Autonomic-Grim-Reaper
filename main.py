@@ -8,6 +8,7 @@ from aStar import *
 import NN.NeuralNetwork as NeuralNetwork
 import GenAl as gal
 import time
+import math
 
 
 class Game:
@@ -40,22 +41,49 @@ class Game:
         self.font = pg.font.SysFont("arial", 20)
         self.net = NeuralNetwork.load()
         self.playing = True
+        self.scout = ScoutReaper(self, 22, 30)
 
         self.tourmanager = gal.TourManager()
 
         self.agent = Reaper(self, 2, 2)
         self.camera = Camera(self.map.width, self.map.height)
 
-        for i in range(6):
-            p = Person(self, randint(1,8), randint(1,8), "boy")
-            self.tourmanager.addPerson(p)
+        p = Person(self, 8, 1, "boy")
+   #     self.tourmanager.addPerson(p)
+        p = Person(self, 4, 3, "boy")
+  #      self.tourmanager.addPerson(p)
+        p = Person(self, 3, 6, "boy")
+   #     self.tourmanager.addPerson(p)
+        p = Person(self, 5, 8, "boy")
+     #   self.tourmanager.addPerson(p)
+        p = Person(self, 6, 6, "boy")
+    #    self.tourmanager.addPerson(p)
+        p = Person(self, 7, 1, "boy")
+    #    self.tourmanager.addPerson(p)
+
         """
+        for i in range(6):
+            p = Person(self, randint(4,10), randint(4,10), "boy")
+            self.tourmanager.addPerson(p)
+        
         for k in range(40):
             Person(self, randint(1,41), randint(1,35), "yes")
         for i in range(20):
             Person(self, randint(1, 41), randint(1, 35))
 
         """
+
+    def AstarWithReaper(self, tabPerson):
+        count = 100000
+        first = None
+        for person in tabPerson:
+            if person is not None:
+                a = Astar(self, self.agent.pos.x, self.agent.pos.y, person.pos.x, person.pos.y, self.agent.direction)[
+                    0].cost
+                if a < count:
+                    count = a
+                    first = person
+        return first
 
     def new(self):
         for grass in self.map.tmxdata.layers[3]:
@@ -90,6 +118,7 @@ class Game:
                 sprite.update()
         self.camera.update(self.agent)
 
+
     def draw(self):
         text = "Zostalo " + str(len(self.people)) + " ludzi."
         text2 = "Kostucha wykonala juz " + str(self.agent.countsteps) + " kroki."
@@ -114,13 +143,16 @@ class Game:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
                 if event.key == pg.K_SPACE:
+                    for person in self.people:
+                        self.tourmanager.addPerson(person)
+
+
                     self.tourmanager.checkAllDistance()
-                    print("ok")
                     print(time.ctime(time.time()))
                     pop = gal.Population(self.tourmanager, 6, True);
                     print("Initial distance: " + str(pop.getFittest().getDistance()))
 
-                    # Evolve population for 50 generations
+                    # Evolve population for 100 generations
                     ga = gal.GA(self.tourmanager)
                     pop = ga.evolvePopulation(pop)
                     for i in range(0, 100):
@@ -131,8 +163,59 @@ class Game:
                     print(time.ctime(time.time()))
                     print("Final distance: " + str(pop.getFittest().getDistance()))
                     print("Solution:")
-                    print(pop.getFittest())
-                    #self.agent.go(pop.getFittest())
+                    b = pop.getFittest()
+
+                    c = self.AstarWithReaper(b)
+                    print(b)
+                    count = 1
+                    for i in range(len(b)):
+                        if b[i].pos == c.pos:
+                            tmp = i
+                            break
+                    print(tmp)
+
+                    howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, b[tmp].pos.x-1, b[tmp].pos.y-1, self.agent.direction)
+                    self.agent.go(howtogo)
+                    newtab = []
+
+                    for i in range(tmp+1, len(b)):
+                        newtab.append(b[i])
+                    for i in range(0, tmp):
+                        newtab.append(b[i])
+                    for i in range (len(newtab)):
+                        print(newtab[i].pos//TILESIZE)
+                        howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, newtab[i].pos.x-1, newtab[i].pos.y-1,
+                                        self.agent.direction)
+                        self.agent.go(howtogo)
+
+            #                 while(count):
+   #                     print(i)
+   #                     if b[i].pos.x == c.pos.x and b[i].pos.y == c.pos.y:
+    #                        count = 0
+#                            for j in range(i, len(b)):
+ #                               print("teraz ide do: ", b[j].pos.x, b[j].pos.y)
+  #                              self.scout.pos = (b[j].pos.x, b[j].pos.y)
+   #                             print("koszt tuptania to ", self.scout.whereAmI())
+           #                     howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, (float(b[j].pos.x)),
+          #                                      (float(b[j].pos.y)), self.agent.direction)
+         #                       self.agent.go(howtogo)
+        #                    for j in range(0, i):
+       #                         print("wchodzem do druga pentla")
+      #                          print("teraz ide do: ", b[j].pos.x, b[j].pos.y)
+     #                           howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, (float(b[j].pos.x)),
+    #                                            (float(b[j].pos.y)), self.agent.direction)
+   #                             self.agent.go(howtogo)
+  #                      else:
+ #                           i+=1
+#
+ #  #                 self.tourmanager = gal.TourManager()
+#
+    #
+   #                 for i in range(0, len(b)):
+  #                      howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, b[i].pos.x, b[i].pos.y, self.agent.direction)
+ #                       print("Zrobiłem)")
+#                        self.agent.go(howtogo)
+
             if event.type == pg.MOUSEBUTTONDOWN:
                 howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, pg.mouse.get_pos()[0], pg.mouse.get_pos()[1], self.agent.direction)
                 self.agent.go(howtogo)

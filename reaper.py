@@ -59,11 +59,13 @@ class Reaper(pg.sprite.Sprite):
         return pom[0].cost
 
     def go(self, howtogo):
+
         if isinstance(howtogo, int):
             print("Bledny cel drogi")
             return -1
 
         for i in range(len(howtogo)-1, -1, -1):
+            self.pos.x = howtogo[i].x * TILESIZE + 32
             self.pos.x = howtogo[i].x * TILESIZE + 32
             self.pos.y = howtogo[i].y * TILESIZE + 32
 

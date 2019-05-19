@@ -55,7 +55,7 @@ class Tour:
     def get(self):
         tab = []
         for i in range(0, self.tourSize()):
-            tab.append(vec(self.getPerson(i).pos.x, self.getPerson(i).pos.y)/TILESIZE)
+            tab.append(vec(self.getPerson(i).pos.x, self.getPerson(i).pos.y))
         return tab
 
     def generateIndividual(self):
@@ -72,8 +72,9 @@ class Tour:
         self.distance = 0
 
     def getFitness(self):
-        if self.fitness == 0:
+        if self.fitness == 0 and float(self.getDistance() != 0):
             self.fitness = 1 / float(self.getDistance())
+
         return self.fitness
 
     def getDistance(self):
