@@ -116,14 +116,14 @@ def smallestState(heap):
     return heap.cost + heap.distance(endtarget)
 
 
-def Astar(game,startx, starty, endx, endy, direction):
+def Astar(game,startx, starty, endx, endy, direction, eventtype="SPACE"):
 
     heap = []
 
     reap = ScoutReaper(game, endx, endy)
-
-    endx = endx - game.camera.x
-    endy = endy - game.camera.y
+    if eventtype == "CLICK":
+        endx = endx - game.camera.x
+        endy = endy - game.camera.y
     start = State(int(startx//TILESIZE), int(starty//TILESIZE), direction)
     end = State (int(endx//TILESIZE), int(endy//TILESIZE), 1)
     endtarget = end

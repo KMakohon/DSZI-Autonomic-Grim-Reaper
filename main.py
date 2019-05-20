@@ -45,6 +45,13 @@ class Game:
         self.agent = Reaper(self, 2, 2)
         self.camera = Camera(self.map.width, self.map.height)
 
+        """
+        for i in range(6):
+            p = Person(self, randint(4,10), randint(4,10), "boy")
+            q = Person(self, randint(4,10), randint(4,10))
+            #self.tourmanager.addPerson(p)
+
+        """
         Person(self, 8, 1, "boy")
         Person(self, 4, 3, "boy")
         Person(self, 4, 6, "boy")
@@ -52,17 +59,15 @@ class Game:
         Person(self, 6, 6, "boy")
         Person(self, 7, 1, "boy")
 
-        """
-        for i in range(6):
-            p = Person(self, randint(4,10), randint(4,10), "boy")
-            self.tourmanager.addPerson(p)
-        
-        for k in range(40):
-            Person(self, randint(1,41), randint(1,35), "yes")
-        for i in range(20):
-            Person(self, randint(1, 41), randint(1, 35))
 
-        """
+    """
+
+    for k in range(40):
+        Person(self, randint(1,41), randint(1,35), "yes")
+    for i in range(20):
+        Person(self, randint(1, 41), randint(1, 35))
+
+    """
 
     def AstarWithReaper(self, tabPerson):
         count = 100000
@@ -179,7 +184,7 @@ class Game:
                     print("Done")
 
             if event.type == pg.MOUSEBUTTONDOWN:
-                howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, pg.mouse.get_pos()[0], pg.mouse.get_pos()[1], self.agent.direction)
+                howtogo = Astar(self, self.agent.pos.x, self.agent.pos.y, pg.mouse.get_pos()[0], pg.mouse.get_pos()[1], self.agent.direction, "CLICK")
                 self.agent.go(howtogo)
 
 
