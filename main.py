@@ -60,14 +60,14 @@ class Game:
         Person(self, 7, 1, "boy")
 
 
-    """
-
-    for k in range(40):
-        Person(self, randint(1,41), randint(1,35), "yes")
-    for i in range(20):
-        Person(self, randint(1, 41), randint(1, 35))
-
-    """
+        """
+        
+        for k in range(40):
+            Person(self, randint(1,41), randint(1,35), "yes")
+        for i in range(20):
+            Person(self, randint(1, 41), randint(1, 35))
+        
+        """
 
     def AstarWithReaper(self, tabPerson):
         count = 100000
